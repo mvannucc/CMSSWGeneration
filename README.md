@@ -17,9 +17,13 @@ LHE:
     example: /afs/cern.ch/user/g/govoni/myeos/samples/2019_EFT/SSeu/SM_limit/SSeu_SMlimit_results/1441466/SSeu_SMlimit_3/unweighted_events.lhe
     
 
-Example of outputs: 
+Example of outputs for 2017 production
 
     https://github.com/latinos/LatinoAnalysis/blob/master/NanoGardener/python/framework/samples/fall17_102X_nAODv5.py
+
+    From the name of the sample:
+    /GluGluHToWWTo2L2Nu_M125_13TeV_powheg2_JHUGenV714_pythia8/RunIIFall17NanoAODv5-PU2017_12Apr2018_Nano1June2019_102X_mc2017_realistic_v7-v1/NANOAODSIM
+    Get the different steps (backward) in the generation:
     
     NanoAOD
     https://cms-pdmv.cern.ch/mcm/requests?prepid=HIG-RunIIFall17NanoAODv5-00331&page=0&shown=127
