@@ -8,8 +8,6 @@ Assumptions:
 - premixed library is available
 
 
-
-
 Prepare to get premix library:
 
     voms-proxy-init -voms cms -rfc
@@ -18,6 +16,31 @@ LHE:
 
     example: /afs/cern.ch/user/g/govoni/myeos/samples/2019_EFT/SSeu/SM_limit/SSeu_SMlimit_results/1441466/SSeu_SMlimit_3/unweighted_events.lhe
     
+
+Example of outputs: 
+
+    https://github.com/latinos/LatinoAnalysis/blob/master/NanoGardener/python/framework/samples/fall17_102X_nAODv5.py
+    
+    NanoAOD
+    https://cms-pdmv.cern.ch/mcm/requests?prepid=HIG-RunIIFall17NanoAODv5-00331&page=0&shown=127
+    
+    MiniAOD 
+    https://cms-pdmv.cern.ch/mcm/requests?prepid=HIG-RunIIFall17MiniAODv2-02464&page=0&shown=127
+    
+    PreMix 
+    https://cms-pdmv.cern.ch/mcm/requests?prepid=HIG-RunIIFall17DRPremix-02533&page=0&shown=127
+    
+    wmLHE
+    https://cms-pdmv.cern.ch/mcm/requests?prepid=HIG-RunIIFall17wmLHEGS-01920&page=0&shown=127
+    
+Instructions:
+
+    NanoAOD
+    https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookNanoAOD#Running_on_various_datasets_from
+    
+    
+
+
     
 
 Produce (from RunTheMatrix):
@@ -39,5 +62,10 @@ Produce (from RunTheMatrix):
 
     
 
+Where:
 
+    /home/amassiro/Cern/Code/UniMiB/CMSSWGeneration
+    
+    /afs/cern.ch/user/a/amassiro/work/Latinos/Framework/Generation
+    
     
