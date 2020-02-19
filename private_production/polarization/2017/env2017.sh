@@ -20,13 +20,15 @@ cd ../../
 seed=$(($(date +%s) % 100 + 1))
 cmsDriver.py Configuration/GenProduction/python/SMP-RunIIFall17wmLHEGS-00046-fragment.py --fileout file:SMP-RunIIFall17wmLHEGS-00046.root --mc --eventcontent RAWSIM,LHE,DQM --datatier GEN-SIM,LHE,DQMIO --conditions 93X_mc2017_realistic_v3 --beamspot Realistic25ns13TeVEarly2017Collision --step LHE,GEN,SIM,VALIDATION:genvalid_all --geometry DB:Extended --era Run2_2017 --python_filename SMP-RunIIFall17wmLHEGS-00046_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${seed})" -n 130 || exit $? ; 
 
-cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_SM.py
-cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_INT.py
-cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_BSM.py
+cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_LL.py
+cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_LT.py
+cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_TT.py
+cp SMP-RunIIFall17wmLHEGS-00046_1_cfg.py SMP-RunIIFall17wmLHEGS-00046_1_cfg_TL.py
 
-sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/SSWW_SMlimit_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_SM.py
-sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/SSWW_RcW_int_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_INT.py
-sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/SSWW_RcW_bsm_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_BSM.py
+sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/VBS_SSWW_LL_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_LL.py
+sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/VBS_SSWW_LT_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_LT.py
+sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/VBS_SSWW_TT_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_TT.py
+sed "s/^.*args = cms.vstring(.*$/    args = cms.vstring('..\/VBS_SSWW_TL_slc6_amd64_gcc630_CMSSW_9_3_16_tarball.tar.xz'),/" -i SMP-RunIIFall17wmLHEGS-00046_1_cfg_TL.py
 
 echo '>>>>>>>>>>>>> set environment for Premix'
 export SCRAM_ARCH=slc6_amd64_gcc630
