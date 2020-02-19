@@ -14,7 +14,7 @@ config.Data.splitting = 'EventBased'
 config.Data.unitsPerJob = 500
 NJOBS = 200  # This is not a configuration parameter, but an auxiliary variable that we use in the next line.
 config.Data.totalUnits = config.Data.unitsPerJob * NJOBS
-config.Data.outLFNDirBase = '/store/user/%s/polarization_2017' % (getUsernameFromSiteDB())
+config.Data.outLFNDirBase = '/store/user/%s/pol2017' % (getUsernameFromSiteDB())
 config.Data.publication = True
 config.Data.outputDatasetTag = 'VBS_SSWW_LL_LHE'
 

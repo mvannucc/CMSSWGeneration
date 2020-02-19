@@ -1,4 +1,4 @@
-#### Environment settings
+### Environment settings
 Log on `lxplus6` firstly, then clone this repository:
 ~~~
 git clone git@github.com:UniMiBAnalyses/CMSSWGeneration.git
@@ -14,7 +14,7 @@ source env2018.sh
 ~~~
 Then you will have related cfg files for each step and related CMSSW.
 
-#### Submit crab jobs
+### Submit crab jobs
 Now you are able to submit crab jobs for each step. In order to get NANOAODSIM, we need 5 steps.
 
 1. GEN-SIM

@@ -15,7 +15,7 @@ config.Data.inputDataset = '/Bulk/jixiao-VBS_SSWW_TL_LHE_RAWSIMoutput-9a1ab938e6
 config.Data.inputDBS = 'phys03'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
-config.Data.outLFNDirBase = '/store/user/%s/polar2017' % (getUsernameFromSiteDB())
+config.Data.outLFNDirBase = '/store/user/%s/pol2017' % (getUsernameFromSiteDB())
 config.Data.publication = True
 config.Data.outputDatasetTag = 'VBS_SSWW_TL_Premix_1'
 

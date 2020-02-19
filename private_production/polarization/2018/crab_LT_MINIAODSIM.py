@@ -15,7 +15,7 @@ config.Data.inputDataset = '/Bulk/jixiao-VBS_SSWW_LT_Premix_2-7c74ac161ee1f5c553
 config.Data.inputDBS = 'phys03'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
-config.Data.outLFNDirBase = '/store/user/%s/eft2018' % (getUsernameFromSiteDB())
+config.Data.outLFNDirBase = '/store/user/%s/pol2018' % (getUsernameFromSiteDB())
 config.Data.publication = True
 config.Data.outputDatasetTag = 'VBS_SSWW_LT_MINIAODSIM'
 

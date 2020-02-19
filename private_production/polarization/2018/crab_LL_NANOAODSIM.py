@@ -15,7 +15,7 @@ config.Data.inputDataset = '/Bulk/jixiao-VBS_SSWW_BSM_MINIAODSIM_NEW-8c47adb282c
 config.Data.inputDBS = 'phys03'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
-config.Data.outLFNDirBase = '/store/user/%s/polarization_2018' % (getUsernameFromSiteDB())
+config.Data.outLFNDirBase = '/store/user/%s/pol2018' % (getUsernameFromSiteDB())
 config.Data.publication = True
 config.Data.outputDatasetTag = 'VBS_SSWW_LL_NANOAODSIM'
 
