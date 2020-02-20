@@ -18,7 +18,7 @@ curl -s --insecure https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_frag
 scram b
 cd ../../
 seed=$(($(date +%s) % 100 + 1))
-cmsDriver.py Configuration/GenProduction/python/SMP-RunIISummer15wmLHEGS-00006-fragment.py --fileout file:SMP-RunIISummer15wmLHEGS-00006.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --customise SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1,Configuration/DataProcessing/Utils.addMonitoring --conditions MCRUN2_71_V1::All --beamspot Realistic50ns13TeVCollision --step LHE,GEN,SIM,VALIDATION:genvalid_all --magField 38T_PostLS1 --python_filename SMP-RunIISummer15wmLHEGS-00006_1_cfg.py --no_exec --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${seed})" -n 49 || exit $? ; 
+cmsDriver.py Configuration/GenProduction/python/SMP-RunIISummer15wmLHEGS-00006-fragment.py --fileout file:SMP-RunIISummer15wmLHEGS-00006.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --customise SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1,Configuration/DataProcessing/Utils.addMonitoring --conditions MCRUN2_71_V1::All --beamspot Realistic50ns13TeVCollision --step LHE,GEN,SIM --magField 38T_PostLS1 --python_filename SMP-RunIISummer15wmLHEGS-00006_1_cfg.py --no_exec --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${seed})" -n 49 || exit $? ; 
 
 cp SMP-RunIISummer15wmLHEGS-00006_1_cfg.py SMP-RunIISummer15wmLHEGS-00006_1_cfg_LL.py
 cp SMP-RunIISummer15wmLHEGS-00006_1_cfg.py SMP-RunIISummer15wmLHEGS-00006_1_cfg_LT.py

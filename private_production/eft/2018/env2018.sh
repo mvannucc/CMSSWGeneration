@@ -18,7 +18,7 @@ curl -s --insecure https://cms-pdmv.cern.ch/mcm/public/restapi/requests/get_frag
 scram b
 cd ../../
 seed=$(($(date +%s) % 100 + 1))
-cmsDriver.py Configuration/GenProduction/python/SMP-RunIIFall18wmLHEGS-00059-fragment.py --fileout file:SMP-RunIIFall18wmLHEGS-00059.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --conditions 102X_upgrade2018_realistic_v11 --beamspot Realistic25ns13TeVEarly2018Collision --step LHE,GEN,SIM,VALIDATION:genvalid_all --geometry DB:Extended --era Run2_2018 --python_filename SMP-RunIIFall18wmLHEGS-00059_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${seed})" -n 114 || exit $? ; 
+cmsDriver.py Configuration/GenProduction/python/SMP-RunIIFall18wmLHEGS-00059-fragment.py --fileout file:SMP-RunIIFall18wmLHEGS-00059.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --conditions 102X_upgrade2018_realistic_v11 --beamspot Realistic25ns13TeVEarly2018Collision --step LHE,GEN,SIM --geometry DB:Extended --era Run2_2018 --python_filename SMP-RunIIFall18wmLHEGS-00059_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring --customise_commands process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${seed})" -n 114 || exit $? ; 
 
 cp SMP-RunIIFall18wmLHEGS-00059_1_cfg.py SMP-RunIIFall18wmLHEGS-00059_1_cfg_SM.py
 cp SMP-RunIIFall18wmLHEGS-00059_1_cfg.py SMP-RunIIFall18wmLHEGS-00059_1_cfg_INT.py
