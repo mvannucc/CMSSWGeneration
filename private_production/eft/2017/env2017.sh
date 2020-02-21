@@ -42,9 +42,9 @@ eval `scram runtime -sh`
 
 scram b
 cd ../../
-cmsDriver.py step1 --fileout file:SMP-RunIIFall17DRPremix-00068_step1.root  --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer17PrePremix-MCv2_correctPU_94X_mc2017_realistic_v9-v1/GEN-SIM-DIGI-RAW" --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW --conditions 94X_mc2017_realistic_v11 --step DIGIPREMIX_S2,DATAMIX,L1,DIGI2RAW,HLT:2e34v40 --nThreads 8 --datamix PreMix --era Run2_2017 --python_filename SMP-RunIIFall17DRPremix-00068_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 1751 || exit $? ; 
+cmsDriver.py step1 --fileout file:SMP-RunIIFall17DRPremix-00068_step1.root  --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer17PrePremix-MCv2_correctPU_94X_mc2017_realistic_v9-v1/GEN-SIM-DIGI-RAW" --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW --conditions 94X_mc2017_realistic_v11 --step DIGIPREMIX_S2,DATAMIX,L1,DIGI2RAW,HLT:2e34v40 --nThreads 4 --datamix PreMix --era Run2_2017 --python_filename SMP-RunIIFall17DRPremix-00068_1_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 1751 || exit $? ; 
 
-cmsDriver.py step2 --filein file:SMP-RunIIFall17DRPremix-00068_step1.root --fileout file:SMP-RunIIFall17DRPremix-00068.root --mc --eventcontent AODSIM --runUnscheduled --datatier AODSIM --conditions 94X_mc2017_realistic_v11 --step RAW2DIGI,RECO,RECOSIM,EI --nThreads 8 --era Run2_2017 --python_filename SMP-RunIIFall17DRPremix-00068_2_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 1751 || exit $? ; 
+cmsDriver.py step2 --filein file:SMP-RunIIFall17DRPremix-00068_step1.root --fileout file:SMP-RunIIFall17DRPremix-00068.root --mc --eventcontent AODSIM --runUnscheduled --datatier AODSIM --conditions 94X_mc2017_realistic_v11 --step RAW2DIGI,RECO,RECOSIM,EI --nThreads 4 --era Run2_2017 --python_filename SMP-RunIIFall17DRPremix-00068_2_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 1751 || exit $? ; 
 
 echo '>>>>>>>>>>>>> set environment for MINIAODSIM'
 export SCRAM_ARCH=slc6_amd64_gcc630
