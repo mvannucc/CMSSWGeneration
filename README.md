@@ -73,3 +73,12 @@ Where:
     /afs/cern.ch/user/a/amassiro/work/Latinos/Framework/Generation
     
     
+-------------
+
+# UL2020 SMEFTsim gridpack generation
+
+In order to generate gradpacks for the LHE production stage one can take inspiration from https://github.com/GiacomoBoldrini/cmsgen .
+The repo contains cards to produce gridpacks for inclusive WW with EFT contributions via SMEFTsim madgraph model.
+The ReadMe describes the steps to produce gridpacks for the UL2020 campaign. For different campaigns or production one should carefully choose which branch of the genproduction to clone (UL2019 branch has mg 261 while master branch, as of  28/01/2020, has mg 265).
+    
+    
