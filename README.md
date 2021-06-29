@@ -23,13 +23,21 @@ This folder allows to generate nanoAOD samples for 2018 year starting from a gri
 Open cmsconnect and go to `/local-scratch/<username>`
 
 1. `git clone https://github.com/UniMiBAnalyses/CMSSWGeneration.git`
+
 2. A `log` folder is necessary to save .log .err and .out files
+
     `mkdir log`
+
 3. Open wrapper.sh L8 and change - if needed - with the suffix of your gridpack.
+
 `gridpack_name="$1_<suffix of your gridpack>_tarball.tar.xz"`
+
 4. Open submit.jdl L9 and change the first input, that is the absolute path to your gridpack. The name of the process must be replaced by `$(proc)`, for example:
+
 `/local-scratch/<username>/gridpacks/$(proc)_slc7_amd64_gcc700_CMSSW_10_6_0_tarball.tar.xz`
+
 5. To make scale and pdf weights available (this will be useful for nuisances at reco level), it is necessary to use CMSSW_10_6_20 sandbox. This means that you can create a CMSSW_10_6_20.tgz and then pass it as an input: 
+
     `cd Generate2018/input`
     `cmsrel CMSSW_10_6_20`
     `cd CMSSW_10_6_20/src`
@@ -37,13 +45,16 @@ Open cmsconnect and go to `/local-scratch/<username>`
     `scram b`
     `cd ../..`
     `tar -zcvf CMSSW_10_6_20.tgz CMSSW_10_6_20`
+    
 You also need CMSSW_10_2_6.tgz, so let's repeat:
+
     `cmsrel CMSSW_10_2_6`
     `cd CMSSW_10_2_6/src`
     `cmsenv`
     `scram b`
     `cd ../..`
     `tar -zcvf CMSSW_10_2_6.tgz CMSSW_10_2_6`
+
 6. The list of input files inside `input` folder should be now:
 - SMP-RunIIAutumn18DRPremix-00050_1_cfg.py
 - SMP-RunIIAutumn18DRPremix-00050_2_cfg.py
@@ -52,23 +63,39 @@ You also need CMSSW_10_2_6.tgz, so let's repeat:
 - SMP-RunIIFall18wmLHEGS-00062_1_cfg.py
 - CMSSW_10_6_20.tgz
 - CMSSW_10_2_6.tgz
+
 Open submit.jdl L9 and change the absolute path of the other 7 input files, for example
+
 `/local-scratch/<username>/CMSSWGeneration/Generate2018/input/SMP-RunIIAutumn18DRPremix-00050_1_cfg.py`
+
 7. Create a folder to save all the nanoAOD files, for example `output`
+
     `mkdir output`
+
 Open submit.jdl L10 and change the absolute path of your ouput folder (do not change `$(proc)/$(proc)_$(Cluster)_$(Step).root`), for example
+
 `transfer_output_remaps = "SMP-RunIIAutumn18NanoAODv7-00058.root = /scratch/<username>/CMSSWGeneration/Generate2018/output/$(proc)/$(proc)_$(Cluster)_$(Step).root"`
+
 8. Open submit.jdl L3 to change the number of events you want for each .root file.
+
 `arguments = $(proc) <number of events>`
+
 9. Open submit.sh L2 to change the number of .root files you want.
+
 `sed -i "12s/.*/Queue <number of .root files> proc in ($1)/g" submit.jdl`
+
 If your output folder has a different name, change also L3
+
 `mkdir -p <your output folder>/$1`
+
 10. Now everything is ready, you just need to run
+
     `./submit.sh <name of your process>`
+
 where the name of the process is the one that appears in the gridpack.
 
 The generation can last a few days, you can see its evolution using
+
     `condor_q`
 
 # Generate2017
