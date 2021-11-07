@@ -6,7 +6,7 @@ echo "System software: `cat /etc/redhat-release`" #Operating System on that node
 
 # get files
 gridpack_name="$1_slc7_amd64_gcc700_CMSSW_10_6_0_tarball.tar.xz"
-excute_file1="SMP-RunIIFall18wmLHEGS-00062_1_cfg.py"
+excute_file1="SMP-RunIIFall18wmLHEGS-00062_SM_1_cfg.py"
 excute_file2="SMP-RunIIAutumn18DRPremix-00050_1_cfg.py"
 excute_file3="SMP-RunIIAutumn18DRPremix-00050_2_cfg.py"
 excute_file4="SMP-RunIIAutumn18MiniAOD-00050_1_cfg.py"
@@ -20,7 +20,7 @@ cmssw_version2="CMSSW_10_6_20"
 # set environment
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 echo "Opening CMSSW_10_2_6"
-tar -xf $sandbox_name1
+tar -xzvf $sandbox_name1
 rm $sandbox_name1
 cd $cmssw_version1/src/
 scramv1 b ProjectRename # this handles linking the already compiled code - do NOT recompile
@@ -28,7 +28,8 @@ eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers
 echo $CMSSW_BASE "is the CMSSW we have on the local worker node"
 cd ../../
 echo $1
-sed -i "s/^.*tarball.tar.xz.*$/     args = cms.vstring(\'..\/$gridpack_name\'),/" -i $excute_file1
+#sed -i "s/^.*tarball.tar.xz.*$/     args = cms.vstring(\'..\/$gridpack_name\'),/" -i $excute_file1
+sed -i 's#^.*tarball.tar.xz.*$#    args = cms.vstring(\"..\/'${gridpack_name}'\"),#' -i $excute_file1 
 # change the request events
 sed -i "s/int32(2500)/int32($2)/g" -i $excute_file1
 date
@@ -45,7 +46,7 @@ rm SMP-RunIIAutumn18DRPremix-00050.root
 date
 
 rm -rf $cmssw_version1
-tar -xf $sandbox_name2
+tar -xzvf $sandbox_name2
 rm $sandbox_name2
 cd $cmssw_version2/src/
 scramv1 b ProjectRename # this handles linking the already compiled code - do NOT recompile
