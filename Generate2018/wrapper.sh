@@ -5,7 +5,7 @@ echo "Running on: `uname -a`" #Condor job is running on this node
 echo "System software: `cat /etc/redhat-release`" #Operating System on that node
 
 # get files
-gridpack_name="$1_slc7_amd64_gcc700_CMSSW_10_6_0_tarball.tar.xz"
+gridpack_name="$1_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz"
 excute_file1="SMP-RunIIFall18wmLHEGS-00062_SM_1_cfg.py"
 excute_file2="SMP-RunIIAutumn18DRPremix-00050_1_cfg.py"
 excute_file3="SMP-RunIIAutumn18DRPremix-00050_2_cfg.py"
