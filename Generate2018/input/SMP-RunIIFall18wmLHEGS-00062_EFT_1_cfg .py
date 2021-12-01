@@ -86,7 +86,8 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             'pythia8CP5Settings', 
             'pythia8PSweightsSettings'
         ),
-        pythia8CP5Settings = cms.vstring(
+        processParameters = cms.vstring('SpaceShower:dipoleRecoil = on'),
+		pythia8CP5Settings = cms.vstring(
             'Tune:pp 14', 
             'Tune:ee 7', 
             'MultipartonInteractions:ecmPow=0.03344', 
@@ -173,16 +174,16 @@ from Configuration.DataProcessing.Utils import addMonitoring
 #call to customisation function addMonitoring imported from Configuration.DataProcessing.Utils
 process = addMonitoring(process)
 
-# Automatic addition of the customisation function from Configuration.GenProduction.randomizeSeeds
-from Configuration.GenProduction.randomizeSeeds import randomizeSeeds 
+# # Automatic addition of the customisation function from Configuration.GenProduction.randomizeSeeds
+# from Configuration.GenProduction.randomizeSeeds import randomizeSeeds 
 
-#call to customisation function randomizeSeeds imported from Configuration.GenProduction.randomizeSeeds
-process = randomizeSeeds(process)
+# #call to customisation function randomizeSeeds imported from Configuration.GenProduction.randomizeSeeds
+# process = randomizeSeeds(process)
 
 # End of customisation functions
 
 # Customisation from command line
-
+process.RandomNumberGeneratorService.externalLHEProducer.initialSeed=int(70)
 # Add early deletion of temporary data products to reduce peak memory need
 from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
 process = customiseEarlyDelete(process)

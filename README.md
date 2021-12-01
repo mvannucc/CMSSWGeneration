@@ -60,13 +60,15 @@ You also need CMSSW_10_2_6.tgz, so let's repeat:
 - SMP-RunIIAutumn18DRPremix-00050_2_cfg.py
 - SMP-RunIIAutumn18MiniAOD-00050_1_cfg.py
 - SMP-RunIIAutumn18NanoAODv7-00058_1_cfg.py
-- SMP-RunIIFall18wmLHEGS-00062_1_cfg.py
+- SMP-RunIIFall18wmLHEGS-00062_SM_1_cfg.py or SMP-RunIIFall18wmLHEGS-00062_EFT_1_cfg.py  
 - CMSSW_10_6_20.tgz
 - CMSSW_10_2_6.tgz
 
 Open submit.jdl L9 and change the absolute path of the other 7 input files, for example
 
 `/local-scratch/<username>/CMSSWGeneration/Generate2018/input/SMP-RunIIAutumn18DRPremix-00050_1_cfg.py`
+
+One should choose between LHEGS for SM or EFT. The SM version is without dipoleRecoil and it should be used to validate the framework and in order to compare with old DAS samples which do not had this option. For newer sample it should be on, so please use the EFT version, regardless of what you are generating.
 
 7. Create a folder to save all the nanoAOD files, for example `output`
 
