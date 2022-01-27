@@ -38,23 +38,25 @@ Open cmsconnect and go to `/local-scratch/<username>`
 
 5. To make scale and pdf weights available (this will be useful for nuisances at reco level), it is necessary to use CMSSW_10_6_20 sandbox. This means that you can create a CMSSW_10_6_20.tgz and then pass it as an input: 
 
-    `cd Generate2018/input`
-    `cmsrel CMSSW_10_6_20`
-    `cd CMSSW_10_6_20/src`
-    `cmsenv`
-    `scram b`
-    `cd ../..`
-    `tar -zcvf CMSSW_10_6_20.tgz CMSSW_10_6_20`
+```
+    cd Generate2018/input
+    cmsrel CMSSW_10_6_20
+    cd CMSSW_10_6_20/src
+    cmsenv
+    scram b
+    cd ../..
+    tar -zcvf CMSSW_10_6_20.tgz CMSSW_10_6_20
+```
     
 You also need CMSSW_10_2_6.tgz, so let's repeat:
-
-    `cmsrel CMSSW_10_2_6`
-    `cd CMSSW_10_2_6/src`
-    `cmsenv`
-    `scram b`
-    `cd ../..`
-    `tar -zcvf CMSSW_10_2_6.tgz CMSSW_10_2_6`
-
+```
+    cmsrel CMSSW_10_2_6
+    cd CMSSW_10_2_6/src
+    cmsenv
+    scram b
+    cd ../..
+    tar -zcvf CMSSW_10_2_6.tgz CMSSW_10_2_6
+```
 6. The list of input files inside `input` folder should be now:
 - SMP-RunIIAutumn18DRPremix-00050_1_cfg.py
 - SMP-RunIIAutumn18DRPremix-00050_2_cfg.py
