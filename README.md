@@ -1,5 +1,14 @@
 # CMSSWGeneration
 
+Up to date(31/01/2022):
+# generation scripts
+In the `generation` folder there are two main scripts to generate with full sim given the `WLLJJ_WToLNu_EWK` flow.
+You are encouraged to use them because of pathces and checks automatically inserted. 
+
+
+
+## Old guide
+
 Instructions on how to generate a private sample using crab in CMSSW 
 
 Assumptions:
