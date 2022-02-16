@@ -6,62 +6,85 @@ import subprocess
 from random import randint
 import glob
 import shutil
+from textwrap import dedent
+def create_CMSSW_tar(release, singularity):
 
-def create_CMSSW_tar(release, scram):
-    script  = "#!/bin/bash\n"
-    script += "export SCRAM_ARCH={} \n".format(scram)
-    script += "source /cvmfs/cms.cern.ch/cmsset_default.sh\n"
-    script += "cd data/CMSSWs\n"
-    script += "scram p {}\n".format(release)
-    script += "cd {}/src\n".format(release)
-    script += "eval `scramv1 runtime -sh`\n"
-    if release =="CMSSW_10_2_22":
-        #FIXME patch with giorgiopizz:
-        script += "git cms-init\n"
-        script += "git cms-merge-topic giorgiopizz:patch_10_2_22_nanoAOD_reweight\n"
-    script += "scram b\n"
-    script += "cd ../..\n"
-    script += "tar -zcf {}.tgz {}\n".format(release, release)
-    script += "rm -rf {}\n".format(release)
-    nameTmpScript = "script_{}.sh".format(randint(100000,900000))
-    with open(nameTmpScript, "w") as file:
-        file.write(script)
-    process = subprocess.Popen("chmod +x {}; ./{}; rm {}".format(nameTmpScript,nameTmpScript,nameTmpScript), shell=True)
-    process.wait()
+    if singularity:
+        script = """
+        #!/bin/bash
+        cd data/CMSSWs/;
+        cat /etc/redhat-release
+        source /cvmfs/cms.cern.ch/cmsset_default.sh
+        scram p {}
+        cd {}/src/
+        eval `scramv1 runtime -sh`
+        scram b
+        cd ../../
+        tar -zcf {}.tgz {}
+        rm -rf {}
+        """.format(release, release, release, release, release)
+        nameTmpScript = "script_{}.sh".format(randint(100000,900000))
+        with open(nameTmpScript, "w") as file:
+            file.write(dedent(script))
+        process = subprocess.Popen("chmod +x {}; cmssw-env --cmsos slc6 --command-to-run  $(echo $(pwd)/{}); rm {}".format(nameTmpScript,nameTmpScript,nameTmpScript), shell=True)
+        process.wait()
+        
+    else:
+        script  = "#!/bin/bash\n"
+        # script += "export SCRAM_ARCH={} \n".format(scram)
+        script += "source /cvmfs/cms.cern.ch/cmsset_default.sh\n"
+        script += "cd data/CMSSWs\n"
+        script += "scram project CMSSW {}\n".format(release)
+        script += "cd {}/src\n".format(release)
+        script += "eval `scramv1 runtime -sh`\n"
+        if release =="CMSSW_10_2_22":
+            script += "git cms-init\n"
+            script += "git cms-merge-topic giorgiopizz:patch_10_2_22_nanoAOD_reweight\n"
+        script += "scram b\n"
+        script += "cd ../..\n"
+        script += "tar -zcf {}.tgz {}\n".format(release, release)
+        script += "rm -rf {}\n".format(release)
+        nameTmpScript = "script_{}.sh".format(randint(100000,900000))
+        with open(nameTmpScript, "w") as file:
+            file.write(script)
+        process = subprocess.Popen("chmod +x {}; ./{}; rm {}".format(nameTmpScript,nameTmpScript,nameTmpScript), shell=True)
+        process.wait()
 
 def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, doBatch):
     with open("Steps.json") as file:
         Steps = json.load(file) 
+    gridpack = os.path.expanduser(gridpack)
+    if not os.path.isfile(gridpack):
+        print("Gridpack path is not correct")
+        return
 
-    if not os.path.isfile(os.path.expanduser(gridpack)):
-        print(gridpack)
-        if not os.path.isfile("~"+str(gridpack[1:])):
-            print("Gridpack path is not correct")
-            return
-
-    totalYears = ["2018", "2017", "2016"]
+    totalYears = Steps.keys()
     if year not in totalYears:
         print("Year not valid")
         print("Valid years are: {}".format(", ".join(totalYears)))
         return
-    
-    totalSteps = ["lhe", "premix", "miniAOD", "nanoAOD"]
+  
+    totalSteps = Steps[year]["steps"]
 
     cmssws = []
-    scrams = []
+    singularities = []
+    # scrams = []
     # print(Steps[year].keys())
     for k in totalSteps:
         cmssws.append(Steps[year][k]['release'])
-        scrams.append(Steps[year][k]['SCRAM_ARCH'])
+        if "singularity" in Steps[year][k]:
+            singularities.append(Steps[year][k]['singularity'])
+        else:
+            singularities.append(False)
     cmssws = list(set(cmssws))
     # print(cmssws)
 
     for i in range(len(cmssws)):
         cmssw = cmssws[i]
-        scram = scrams[i]
+        singularity = singularities[i]
         if not os.path.isfile("data/CMSSWs/{}.tgz".format(cmssw)):
             print("Should create CMSSW tgz for release {}".format(cmssw))
-            create_CMSSW_tar(cmssw, scram)
+            create_CMSSW_tar(cmssw, singularity)
 
 
     if os.path.isdir("output/"+name):
@@ -73,7 +96,7 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
 
 
 
-    
+  
     fileToTransfer = [os.path.abspath(gridpack)]
     inputsCfg = glob.glob("data/input_{}/*.py".format(year))
     inputsCfg = list(map(lambda k: os.path.abspath(k), inputsCfg))
@@ -82,23 +105,36 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
     for cmssw in cmssws:
         fileToTransfer.append(os.path.abspath(glob.glob("data/CMSSWs/{}.tgz".format(cmssw))[0]))
 
+    if doBatch == 1:
+        jdl = "Universe = vanilla \n"
+        jdl += "Executable = wrapper.sh\n"
+        jdl += "arguments = $(Step)\n"
+        jdl += "use_x509userproxy = true\n"
+        jdl += "request_cpus = 8 \n"
+        jdl += "should_transfer_files = YES\n"
+        jdl += "Error = log/$(proc).err_$(Step)\n"
+        jdl += "Output = log/$(proc).out_$(Step)\n"
+        jdl += "Log = log/$(proc).log_$(Step)\n"
+        jdl += "transfer_input_files = {}\n".format(", ".join(fileToTransfer))
+        jdl += 'transfer_output_remaps = "{}.root = {}/$(proc)_$(Cluster)_$(Step).root"\n'.format(outputFile, os.path.abspath("output/{}/root".format(name)))
+        jdl += "when_to_transfer_output = ON_EXIT\n"
+        jdl += "Queue {} proc in ({})\n".format(jobs, name)
 
-    jdl = "Universe = vanilla \n"
-    jdl += "Executable = wrapper.sh\n"
-    jdl += "arguments = $(proc) {}\n".format(events)
-    jdl += "request_cpus = 8 \n"
-    jdl += "should_transfer_files = YES\n"
-    jdl += "Error = log/$(proc).err_$(Step)\n"
-    jdl += "Output = log/$(proc).out_$(Step)\n"
-    jdl += "Log = log/$(proc).log\n"
-    jdl += "transfer_input_files = {}\n".format(", ".join(fileToTransfer))
-    jdl += 'transfer_output_remaps = "{}.root = {}/$(proc)_$(Cluster)_$(Step).root"\n'.format(outputFile, os.path.abspath("output/{}/root".format(name)))
-    jdl += "when_to_transfer_output = ON_EXIT\n"
-    jdl += "Queue {} proc in ({})\n".format(jobs, name)
+        with open("output/{}/submit.jdl".format(name), "w") as file:
+            file.write(jdl)
+    else:
+        workdir = "output/{}/workdir".format(name)
+        os.makedirs(workdir)
+        jdl = "#!/bin/bash\n"
+        for f in fileToTransfer:
+            jdl += "cp {} workdir \n".format(f)
 
-    with open("output/{}/submit.jdl".format(name), "w") as file:
-        file.write(jdl)
-    
+        jdl += "cp wrapper.sh workdir\n"
+        jdl += "cd workdir; ./wrapper.sh > ../log/local.log\n"
+
+        with open("output/{}/run.sh".format(name), "w") as file:
+            file.write(jdl)
+        process = subprocess.Popen("chmod +x output/{}/run.sh".format(name), shell=True)
 
     wrapper =  "#!/bin/bash\n"
     wrapper += 'echo "Starting job on " `date` #Date/time of start of job\n'
@@ -107,50 +143,53 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
     wrapper += 'source /cvmfs/cms.cern.ch/cmsset_default.sh\n'
 
     openCMSSW = ""
-    
-    donePremixFirst = False
+    files = glob.glob("data/input_{}/*.py".format(year))
+    files = list(map(lambda k: k.split("/")[-1], files))
+    totalStepsCorrect = [x for x in totalSteps]
+    stepFiles = []
+    for step in totalSteps:
+        a = sorted(list(filter(lambda k: step.lower() in k.lower(), files)))
+        stepFiles.extend(a)
+        if len(a)>1 and totalSteps.count(step)==1:
+            for i in range(1, len(a)):
+                totalStepsCorrect.insert(totalStepsCorrect.index(step),step)       
+    print(stepFiles, totalStepsCorrect)
+    print(list(zip(totalStepsCorrect, stepFiles)))        
+  
     totalSteps.insert(1, "premix")
     filesToRemove = [gridpack.split("/")[-1]]
-    for k in totalSteps:
+    for k, file in zip(totalStepsCorrect, stepFiles):
         wrapper += "#Working on {} step\n\n".format(k)
-        file = list(filter(lambda j: k.lower() in j.lower(), inputsCfg))[0].split("/")[-1]
-        if k == "premix":
-            if not donePremixFirst:
-                if "_2_" in file:
-                    # should first run premix _1_
-                    file = file[:-8]+"1_cfg.py"
-                donePremixFirst = True
-            
-            else:
-                if "_1_" in file:
-                    # now should run premix _2_
-                    file = file[:-8]+"2_cfg.py"
-            
+
+        if k == 'lhe':
+            wrapper += "sed -i 's#^.*tarball.tar.xz.*$#    args = cms.vstring(\"../{}\"),#' -i {}\n".format(gridpack.split("/")[-1], file)
+            # input = cms.untracked.int32(274)
+            wrapper += "sed -i 's#^.*input[^=]*=[^=]*cms.untracked.int32.*$#    input = cms.untracked.int32({})#g' -i {}\n".format(events, file)
+            wrapper += 'sed -i "s/^.*nEvents = .*$/    nEvents = cms.untracked.uint32({}),/g" -i {}\n'.format(events, file)
+            wrapper += 'sed -i "s/^process.RandomNumberGeneratorService.externalLHEProducer.initialSeed.*$/process.RandomNumberGeneratorService.externalLHEProducer.initialSeed=int($(($1+1)))/g" -i {} \n'.format(file)
+            if dipoleRecoil:
+                wrapper += "sed -i '/^.*pythia8CP5Settings[^=]*=.*/i \ \ \ \ \ \ \ \ processParameters = cms.vstring(\"SpaceShower:dipoleRecoil = on\"),' -i {}\n".format(file)
+          
         if Steps[year][k]['release'] != openCMSSW:
             if openCMSSW != "":
-                wrapper += "rm -rf {}".format(openCMSSW)
+                wrapper += "rm -rf {}\n".format(openCMSSW)
             wrapper += 'echo "Opening {}"\n'.format(Steps[year][k]['release'])
             wrapper += 'tar -xzvf {}.tgz\n'.format(Steps[year][k]['release'])
             wrapper += 'rm {}.tgz\n'.format(Steps[year][k]['release'])
             wrapper += 'cd {}/src/\n'.format(Steps[year][k]['release'])
-            wrapper += 'export SCRAM_ARCH={}\n'.format(Steps[year][k]['SCRAM_ARCH'])
+            # wrapper += 'export SCRAM_ARCH={}\n'.format(Steps[year][k]['SCRAM_ARCH'])
             wrapper += 'scramv1 b ProjectRename # this handles linking the already compiled code - do NOT recompile\n'
             wrapper += 'eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers\n'
             wrapper += 'echo $CMSSW_BASE "is the CMSSW we have on the local worker node"\n'
             wrapper += 'cd ../../\n'
             openCMSSW = Steps[year][k]['release']
-        if k == 'lhe':
-            wrapper += "sed -i 's#^.*tarball.tar.xz.*$#    args = cms.vstring(\"./{}\"),#' -i {}\n".format(gridpack.split("/")[-1], file)
-            wrapper += 'sed -i "s/^.*nEvents = .*$/    nEvents = cms.untracked.uint32({})/g" -i {}\n'.format(events, file)
-            if dipoleRecoil:
-                wrapper += "sed '/^.*pythia8CP5Settings[^=]*=.*/i \ \ \ \ \ \ \ \ processParameters = cms.vstring(\"SpaceShower:dipoleRecoil = on\"),' {} -i\n".format(file)
         wrapper += "date\n"
         wrapper += "cmsRun {}\n".format(file)
         if removeOldRoot:
             if k == "lhe":
                 filesToRemove.append(file.split("_")[0]+".root")
                 filesToRemove.append(file.split("_")[0]+"_inLHE.root")
-                
+              
             elif k == "premix" and "_1_" not in file:
                 filesToRemove.append(file.split("_")[0]+".root")
                 filesToRemove.append(file.split("_")[0]+"_0.root")
@@ -190,7 +229,7 @@ def helperJsonParse(Samples, sample):
             print("{} not present in Samples.json dict for {}".format(p, sample))
             return True, []
         paramsD[p] = Samples[sample][p]
-    
+  
     optional_params = ["removeOldRoot", "dipoleRecoil", "events", "jobs", "doBatch"]
     for p in optional_params:
         if p in Samples[sample].keys():
