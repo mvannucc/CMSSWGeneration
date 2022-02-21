@@ -12,6 +12,7 @@ def findLatestSubmit(folder):
     ids = sorted(list(map(lambda k: int(k), ids)))
     print(ids[-1]+1)
     return ids[-1]+1
+
 if len(argv)<2:
     print("Should specify output folder for which to resubmit jobs")
     sys.exit(1) 
