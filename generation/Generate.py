@@ -40,6 +40,10 @@ def create_CMSSW_tar(release, singularity):
         if release =="CMSSW_10_2_22":
             script += "git cms-init\n"
             script += "git cms-merge-topic giorgiopizz:patch_10_2_22_nanoAOD_reweight\n"
+        elif release == "CMSSW_10_2_6":
+            print("--> Patching 10_2_6")
+            script += "git cms-init\n"
+            script += "git cms-merge-topic GiacomoBoldrini:patch_10_2_6_gridpack\n"
         script += "scram b\n"
         script += "cd ../..\n"
         script += "tar -zcf {}.tgz {}\n".format(release, release)
@@ -50,7 +54,7 @@ def create_CMSSW_tar(release, singularity):
         process = subprocess.Popen("chmod +x {}; ./{}; rm {}".format(nameTmpScript,nameTmpScript,nameTmpScript), shell=True)
         process.wait()
 
-def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, doBatch):
+def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, doBatch, eos_out_path):
     with open("Steps.json") as file:
         Steps = json.load(file) 
     gridpack = os.path.expanduser(gridpack)
@@ -96,28 +100,37 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
 
 
 
-  
-    fileToTransfer = [os.path.abspath(gridpack)]
+    # if the gridpack is on eos then we can't give it as input instead we eos cp from the executable script
+
+    if gridpack.startswith("/eos"): fileToTransfer = []
+    else: fileToTransfer = [gridpack]
+
     inputsCfg = glob.glob("data/input_{}/*.py".format(year))
     inputsCfg = list(map(lambda k: os.path.abspath(k), inputsCfg))
     fileToTransfer.extend(inputsCfg)
     outputFile = glob.glob("data/input_{}/*Nano*.py".format(year))[0].split("/")[-1].split("_1_")[0]
     for cmssw in cmssws:
         fileToTransfer.append(os.path.abspath(glob.glob("data/CMSSWs/{}.tgz".format(cmssw))[0]))
-
+     
     if doBatch == 1:
         jdl = "Universe = vanilla \n"
         jdl += "Executable = wrapper.sh\n"
-        jdl += "arguments = $(Step)\n"
+        if eos_out_path != "":
+           jdl += "outfilename = {}/$(proc)_$(ClusterId)_$(ProcId).root\n".format(eos_out_path)
+           jdl += "arguments = $(Step) $(outfilename)\n"
+        else: 
+           jdl += "arguments = $(Step)\n"
         jdl += "use_x509userproxy = true\n"
+        jdl += " +JobFlavour = \"workday\"\n"
         jdl += "request_cpus = 8 \n"
         jdl += "should_transfer_files = YES\n"
         jdl += "Error = log/$(proc).err_$(Step)\n"
         jdl += "Output = log/$(proc).out_$(Step)\n"
         jdl += "Log = log/$(proc).log_$(Step)\n"
         jdl += "transfer_input_files = {}\n".format(", ".join(fileToTransfer))
-        jdl += 'transfer_output_remaps = "{}.root = {}/$(proc)_$(Cluster)_$(Step).root"\n'.format(outputFile, os.path.abspath("output/{}/root".format(name)))
-        jdl += "when_to_transfer_output = ON_EXIT\n"
+        if eos_out_path == "":
+           jdl += 'transfer_output_remaps = "{}.root = {}/$(proc)_$(Cluster)_$(Step).root"\n'.format(outputFile, os.path.abspath("output/{}/root".format(name)))
+           jdl += "when_to_transfer_output = ON_EXIT\n"
         jdl += "Queue {} proc in ({})\n".format(jobs, name)
 
         with open("output/{}/submit.jdl".format(name), "w") as file:
@@ -130,18 +143,23 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
             jdl += "cp {} workdir \n".format(f)
 
         jdl += "cp wrapper.sh workdir\n"
-        jdl += "cd workdir; ./wrapper.sh > ../log/local.log\n"
+        jdl += "cd workdir; ./wrapper.sh\n"
 
         with open("output/{}/run.sh".format(name), "w") as file:
             file.write(jdl)
         process = subprocess.Popen("chmod +x output/{}/run.sh".format(name), shell=True)
 
     wrapper =  "#!/bin/bash\n"
+    wrapper += "export EOS_MGM_URL=root://eosuser.cern.ch\n"
     wrapper += 'echo "Starting job on " `date` #Date/time of start of job\n'
     wrapper += 'echo "Running on: `uname -a`" #Condor job is running on this node\n'
     wrapper += 'echo "System software: `cat /etc/redhat-release`" #Operating System on that node\n'
     wrapper += 'source /cvmfs/cms.cern.ch/cmsset_default.sh\n'
+    
+    if gridpack.startswith("/eos"):
 
+       wrapper += 'eos cp {} .\n'.format(gridpack)
+    
     openCMSSW = ""
     files = glob.glob("data/input_{}/*.py".format(year))
     files = list(map(lambda k: k.split("/")[-1], files))
@@ -198,6 +216,10 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
         wrapper += "\n\n"
     wrapper += "rm {}\n".format(" ".join(filesToRemove))
     wrapper += "rm -rf {} *py\n".format(openCMSSW)
+
+    if eos_out_path != "":
+       wrapper += "eos cp SMP-RunIIAutumn18NanoAODv7-00058.root $2\n".format(eos_out_path) 
+ 
     wrapper += "date\n"
 
     with open("output/{}/wrapper.sh".format(name), "w") as file:
@@ -219,6 +241,7 @@ def helperJsonParse(Samples, sample):
         "events": 2500,
         "jobs": 400,
         "doBatch": 0,
+        "eosPath": "",
     }
     if not sample in Samples.keys():
         print("Sample {} not present in Samples.json".format(sample))
@@ -230,7 +253,7 @@ def helperJsonParse(Samples, sample):
             return True, []
         paramsD[p] = Samples[sample][p]
   
-    optional_params = ["removeOldRoot", "dipoleRecoil", "events", "jobs", "doBatch"]
+    optional_params = ["removeOldRoot", "dipoleRecoil", "events", "jobs", "doBatch", "eosPath"]
     for p in optional_params:
         if p in Samples[sample].keys():
             paramsD[p] = Samples[sample][p]
