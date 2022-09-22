@@ -122,7 +122,7 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
            jdl += "arguments = $(Step)\n"
         jdl += "use_x509userproxy = true\n"
         jdl += " +JobFlavour = \"workday\"\n"
-        jdl += "request_cpus = 8 \n"
+        jdl += "request_cpus = 2 \n"
         jdl += "should_transfer_files = YES\n"
         jdl += "Error = log/$(proc).err_$(Step)\n"
         jdl += "Output = log/$(proc).out_$(Step)\n"
