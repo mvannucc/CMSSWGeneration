@@ -1,6 +1,6 @@
 # Process description
 
-Use `Pythia8` to generate RSGraviton events at LO, using default CMS tune and parameters for the shower and PDF. The generation in performed in bins of the mass of the graviton $`m_{G}`$, that is sets randomly inside the job with a configurable step size. The graviton decays exclusively into two Higgs bosons and then only $`HH\to bb\tau\tau`$ final states are considered. This is done by using the `ResonanceDecayFilter` module internal to `Pythia`. Furthermore, very job can set different random values for $`m_{H}`$ within a certain chosen range and according to a certain step size.
+Use `Pythia8` to generate RSGraviton events at LO, using default CMS tune and parameters for the shower and PDF. The generation in performed in bins of the mass of the graviton $m_{G}$, that is sets randomly inside the job with a configurable step size. The graviton decays exclusively into two Higgs bosons and then only $HH\rightarrow bb\tau\tau$ final states are considered. This is done by using the `ResonanceDecayFilter` module internal to `Pythia`. Furthermore, very job can set different random values for $m_{H}$ within a certain chosen range and according to a certain step size.
 
 # Installation
 
@@ -53,7 +53,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
 # DIGIRAW step
 * Generate the base configuration via:
   ```sh
-  cmsDriver.py  --python_filename HIG-RunIISummer20UL18DIGIPremix-01000_1_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:HIG-RunIISummer20UL18DIGIPremix-01000.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2/PREMIX" --conditions 106X_upgrade2018_realistic_v11_L1v1 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:HIG-RunIISummer20UL18SIM-01019.root --datamix PreMix --era Run2_2018 --runUnscheduled --no_exec --mc -n $EVENTS || exit $? ;  
+  cmsDriver.py  --python_filename HIG-RunIISummer20UL18DIGIPremix-01000_1_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:HIG-RunIISummer20UL18DIGIPremix-01000.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2/PREMIX" --conditions 106X_upgrade2018_realistic_v11_L1v1 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:HIG-RunIISummer20UL18SIM-01019.root --datamix PreMix --era Run2_2018 --runUnscheduled --no_exec --mc -n 1 ;  
   ```
 * Then, the `digi_raw_step.py` is produced with the following settings:
   * `nThreads`: number of parallel threads

@@ -1,6 +1,6 @@
 # Process description
 
-Use `Pythia8` to generate H+jets events at LO, using default CMS tune and parameters for the shower and PDF. The generation in performed in bins of Higgs $`p_{T}`$ and with exclusive decays into a $`\tau\tau`$ final state. In addition, every job can set different random values for $`m_{H}`$ within a certain chosen range and according to a certain step size. This allows to uniformly sample the Higgs boson mass within a certain range
+Use `Pythia8` to generate H+jets events at LO, using default CMS tune and parameters for the shower and PDF. The generation in performed in bins of Higgs $p_{T}$ and with exclusive decays into a $\tau\tau$ final state. In addition, every job can set different random values for $m_{H}$ within a certain chosen range and according to a certain step size. This allows to uniformly sample the Higgs boson mass within a certain range
 
 # Installation
 
