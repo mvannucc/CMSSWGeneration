@@ -1,8 +1,8 @@
-## Process description
+# Process description
 
 Use `Pythia8` to generate RSGraviton events at LO, using default CMS tune and parameters for the shower and PDF. The generation in performed in bins of the mass of the graviton $`m_{G}`$, that is sets randomly inside the job with a configurable step size. The graviton decays exclusively into two Higgs bosons and then only $`HH\to bb\tau\tau`$ final states are considered. This is done by using the `ResonanceDecayFilter` module internal to `Pythia`. Furthermore, very job can set different random values for $`m_{H}`$ within a certain chosen range and according to a certain step size.
 
-## Installation
+# Installation
 
 ```sh
 cmsrel CMSSW_10_6_30;
@@ -15,7 +15,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
 
 `Disclaimer`: base commands for the various steps are taken from [[McM]](https://cms-pdmv.cern.ch/mcm/) for the `RunIISummer20UL18MiniAODv2` production chain. 
 
-## LHE+GEN step
+# LHE+GEN step
 
 * Generate the base configuration via:
   ```sh
@@ -39,7 +39,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
   * `generationStep`: integer number used to set the lumi-section value
   * The run number is set to be equal to the job number but, within each job, multiple mass values are sampled/generated. Each of them is identified by the luminosity value.
 
-## SIM-step
+# SIM-step
 
 * Generate the base configuration via:
   ```sh
@@ -50,7 +50,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
   * `inputName`: name of the input file containing GEN events (local file)
   * `outputName`: name of the output GEN-SIM file to be produced
 
-## DIGIRAW step
+# DIGIRAW step
 * Generate the base configuration via:
   ```sh
   cmsDriver.py  --python_filename HIG-RunIISummer20UL18DIGIPremix-01000_1_cfg.py --eventcontent PREMIXRAW --customise Configuration/DataProcessing/Utils.addMonitoring --datatier GEN-SIM-DIGI --fileout file:HIG-RunIISummer20UL18DIGIPremix-01000.root --pileup_input "dbs:/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2/PREMIX" --conditions 106X_upgrade2018_realistic_v11_L1v1 --step DIGI,DATAMIX,L1,DIGI2RAW --procModifiers premix_stage2 --geometry DB:Extended --filein file:HIG-RunIISummer20UL18SIM-01019.root --datamix PreMix --era Run2_2018 --runUnscheduled --no_exec --mc -n $EVENTS || exit $? ;  
@@ -65,7 +65,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
     dasgoclient --query "file dataset=/Neutrino_E-10_gun/RunIISummer20ULPrePremix-UL18_106X_upgrade2018_realistic_v11_L1v1-v2/PREMIX" > ../pileup.py
     ```
 
-## HLT step
+# HLT step
 
 * Generate the base configuration via:
   ```sh
@@ -80,7 +80,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
   * `inputName`: name of the input file containing GEN-SIM-DIGI-RAW events (local file)
   * `outputName`: name of the output GEN-SIM-RAW-DIGI file to be produced
 
-## RECO step
+# RECO step
 
 * Generate the base configuration via:
   ```sh
@@ -91,7 +91,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
   * `inputName`: name of the input file containing GEN-SIM-DIGI-RAW events (local file)
   * `outputName`: name of the output AODSIM file to be produced
 
-## MINIAOD step
+# MINIAOD step
 
 * Generate the base configuration via:
   ```sh
@@ -103,7 +103,7 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
   * `outputName`: name of the output MINIAOD file to be produced
 * Finally, copy `miniaod_step.py` into `miniaod_step_fake.py` in order to submit the crab jobs. The only difference between the two is replacing the `PoolSource` with an `EmptySource` module as expected for event generation
 
-## Crab config files
+# Crab config files
 
 * The production of MC events is performed via crab. It is enough to create and submit a private MC task as indicated by the example config files placed in the directory.
 * There are example production configuration files, it is important in each of the to express
