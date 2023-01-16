@@ -10,7 +10,7 @@ cd CMSSW_10_6_30/src;
 cmsenv;
 git-cms-init;
 git clone git@github.com:UniMiBAnalyses/CMSSWGeneration.git;
-cd CMSSWGeneration/crab_miniaod_production/Era2018UL;
+cd CMSSWGeneration/crab_miniaod_production/Era2018UL/RSGravitoToHHTo2B2Tau_Variable_MG_MH
 ````
 
 `Disclaimer`: base commands for the various steps are taken from [[McM]](https://cms-pdmv.cern.ch/mcm/) for the `RunIISummer20UL18MiniAODv2` production chain. 

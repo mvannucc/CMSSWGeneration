@@ -21,8 +21,6 @@ config.JobType.disableAutomaticOutputCollection = True
 config.JobType.allowUndistributedCMSSW = True
 config.JobType.maxMemoryMB = 5500
 config.JobType.numCores    = 4
-config.JobType.sendPythonFolder = True
-config.JobType.sendExternalFolder = True
 ## Data
 config.Data.splitting   = 'EventBased'
 config.Data.unitsPerJob = 1500
