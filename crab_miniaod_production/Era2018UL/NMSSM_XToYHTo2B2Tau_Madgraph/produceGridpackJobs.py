@@ -6,8 +6,8 @@ from importlib import import_module
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input-card-dir', type=str, default='./input_cards',help='directory containing the madgraph input cards')
-parser.add_argument('-d', '--input-genprod-dir', type=str, default='./genproductions/bin/MadGraph5_aMCatNLO/',help='gen production directory to be copied at the node');
-parser.add_argument('-s', '--gridpack-script', type=str, default='gridpack_generation.sh',help='genprod script to be used');
+parser.add_argument('-d', '--input-genprod-dir', type=str, default='',help='gen production directory to be copied at the node');
+parser.add_argument('-s', '--gridpack-script', type=str, default='genproductions/bin/MadGraph5_aMCatNLO/gridpack_generation.sh',help='genprod script to be used');
 parser.add_argument('-o', '--output-dir', type=str, default='./output_dir',help='output directory where to copy the gridpack')
 parser.add_argument('-x', '--mx', type=int, nargs="+", default=[], help='list of the mx values to be generated')
 parser.add_argument('-y', '--my', type=int, nargs="+", default=[], help='list of the my values to be generated')
@@ -62,14 +62,15 @@ if __name__ == '__main__':
                 shutil.move(os.path.join(path,fname),os.path.join(path,fname.replace("NMSSM_XToYH",jdir)))
 
             ## write the job to be executed
-            subdir1 = "genproductions/"+args.input_genprod_dir.split("genproductions")[1];
-            subdir2 = args.input_genprod_dir.split("genproductions")[0]+"/genproductions";
+            script_path = os.path.dirname(args.gridpack_script);
+            script_name = os.path.basename(args.gridpack_script);
             job_script = open("%s/condor_job.sh"%(path),"w");
-            job_script.write("#!/bin/bash\n");               
-            job_script.write('rsync -ua '+cwd+'/'+subdir2+' ./\n');
-            job_script.write('cd '+subdir1+'\n');            
+            job_script.write("#!/bin/bash\n");   
+            job_script.write('xrdcp '+args.input_genprod_dir+' ./\n');
+            job_script.write('tar -xf '+args.input_genprod_dir.split("/")[-1]+'\n');
+            job_script.write('cd '+script_path+'\n');            
             job_script.write('rsync -ua '+cwd+'/'+path+' ./\n');
-            job_script.write('./'+os.path.basename(args.gridpack_script)+' '+jdir+' '+jdir+'\n');
+            job_script.write('./'+os.path.basename(script_name)+' '+jdir+' '+jdir+'\n');
             job_script.write('rsync -ua *.tar.gz '+args.output_dir+'\n');
             job_script.close();
             os.system("chmod +x %s/condor_job.sh"%(path));
