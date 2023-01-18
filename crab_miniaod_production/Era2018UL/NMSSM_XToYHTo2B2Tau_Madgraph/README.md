@@ -29,16 +29,31 @@ In order to produce the gridpacks of interest please follow the guidelines below
 * Submit gridpack generation: 
   ```sh
   cd CMSSWGeneration/crab_miniaod_production/Era2018UL/NMSSM_XToYHTo2B2Tau_Madgraph;
-  python produceGridpackJobs.py -i input_cards -d genproductions/bin/MadGraph5_aMCatNLO -x 300 -y 110 -j job_gridpack_mssm -o /eos/cms/store/user/rgerosa/NMSSM_XToYH_gridpacks/ --command submit
+  python produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions.tar.gz -j job_gridpack_mssm -o /eos/cms/store/user/rgerosa/NMSSM_XToYH_gridpacks/ --command submit -x 300 360 400 450 500 550 600 650 700 750 800 850 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2200 2400 2500 -y 105 110 115 120 130 135 140 145
   ```
   * `-i`: folder containing the base MG cards `input_cards`
-  * `-d`: path to the `genproductions` github repository that has been checked out
+  * `-d`: path to the `genproductions` tar archive that is created with the instructions listed above
+  * `-s`: relative path to the gen production script to be used for MG
   * `-x`: list of $m_{X}$ that needs to be considered for the gridpack generation
   * `-y`: list of $m_{Y}$ that needs to be considered for the gridpack generation
   * `-j`: directory where condorHT job files are created
   * `-o`: output folder where the gridpacks are copied
   * `--command`: either `submit` or `none`
 * Run the script from an `lxplus` machine and select the best scheduler available via `myschedd bump`
+
+# Download of gridpacks
+
+* In every crab job, the gridpacks for a certain number of mass hypothesis are downloaded locally in the job scratch directory and are used in the generation. This is performed via the `copy_gridpacks.py` script that takes as input arguments:
+ ``` 
+ * `-i`: directory where all gridpacks are located on a CMS Storage Element
+ * `-o`: name of the output file containing the gridpacks used in the job that are copied locally in the scratch directory (job node)
+ * `-g`: addres of the Storage Element that can be used by `gfal` 
+ * `-xmin` and `-xmax`: min and max values of $m_{X}$ in the gridpacks that are considered
+ * `-ymin` and `-ymax`: min and max values of $m_{Y}$ in the gridpacks that are considered
+ * Example:
+ ```sh
+ python copy_gridpacks.py -i /store/user/rgerosa/NMSSM_XToYH_gridpacks/ -o gridpack.list --mxmin=1000 --mxmax=1500 --mymin=120 --mymax=130
+ * Caveat: `gfal` can be used only before doing `cmsenv`
 
 # LHE+GEN step
 
@@ -57,13 +72,8 @@ In order to produce the gridpacks of interest please follow the guidelines below
   * `nEvents`: number of events that will be generated
   * `outputName`: name of the output GEN to be produced
   * `nThreads`: number of parallel threads
-  * `resonanceMassMin`: minimum mass of the graviton that should be considered by the random sampling
-  * `resonanceMassMax`: minimum mass of the graviton that should be considered by the random sampling
-  * `resonanceMassStepSize`: discrete step size that needs to be considered in the graviton mass sampling
-  * `higgsMassMin`: minimum mass of the Higgs that should be considered by the random sampling
-  * `higgsMassMax`: minimum mass of the Higgs that should be considered by the random sampling
-  * `higgsMassStepSize`: discrete step size that needs to be considered in the Higgs mass sampling
   * `generationStep`: integer number used to set the lumi-section value
+  * `gridpacks`: file with the list of gridpack names to be considered in the random sampling
   * The run number is set to be equal to the job number but, within each job, multiple mass values are sampled/generated. Each of them is identified by the luminosity value.
 
 # SIM-step
