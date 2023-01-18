@@ -15,13 +15,15 @@ cd CMSSWGeneration/crab_miniaod_production/Era2018UL/NMSSM_XToYHTo2B2Tau_Madgrap
 
 # Gridpack generation
 
-First checkout the genproduction repository used for the UL production (with the MG version for UL):
+First checkout the genproduction repository used for the UL production (with the MG version for UL) and create a tarball in order to be copied to the condorHT node:
 
 ```sh
 git clone https://github.com/cms-sw/genproductions.git -b mg265UL
+tar -czvf genproductions.tar.gz genproductions
 ```
 		
 In order to produce the gridpacks of interest please follow the guidelines below:
+* GEN-POG twiki with instructions for MG event generation [[MadGraph-Instructions]](https://twiki.cern.ch/twiki/bin/view/CMS/QuickGuideMadGraph5aMCatNLO)
 * The directory `InputMadgraphCards` contains all run/proc/customize cards needed for each sample to be generated i.e. each $m_{X}$ and $m_{Y}$ value. These are the inputs needed for each gridpack generation
 * The gridpack generation for each mass point happens using the CERN CondorHT batch by using the official CMS GEN group submission workflow contained in `genproductions/bin/MadGraph5_aMCatNLO/`. In particular, the `gridpack_generation.sh` and a custom CondorHT CERN submission scripts `produceGridpackJobs.py` are used;
 * Submit gridpack generation: 

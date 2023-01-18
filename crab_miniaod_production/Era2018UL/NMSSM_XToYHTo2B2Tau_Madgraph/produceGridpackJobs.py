@@ -66,12 +66,12 @@ if __name__ == '__main__':
             script_name = os.path.basename(args.gridpack_script);
             job_script = open("%s/condor_job.sh"%(path),"w");
             job_script.write("#!/bin/bash\n");   
-            job_script.write('xrdcp '+args.input_genprod_dir+' ./\n');
+            job_script.write('rsync -ua '+args.input_genprod_dir+' ./\n');
             job_script.write('tar -xf '+args.input_genprod_dir.split("/")[-1]+'\n');
             job_script.write('cd '+script_path+'\n');            
             job_script.write('rsync -ua '+cwd+'/'+path+' ./\n');
             job_script.write('./'+os.path.basename(script_name)+' '+jdir+' '+jdir+'\n');
-            job_script.write('rsync -ua *.tar.gz '+args.output_dir+'\n');
+            job_script.write('rsync -ua *tarball.tar.xz '+args.output_dir+'\n');
             job_script.close();
             os.system("chmod +x %s/condor_job.sh"%(path));
 
