@@ -1,14 +1,24 @@
 #!/bin/bash                                                                                                                                                                                       
+set -e
 BASE=$PWD
 RELEASE_BASE=$CMSSW_BASE
 
-export SCRAM_ARCH=slc7_amd64_gcc900
+export SCRAM_ARCH=slc7_amd64_gcc700
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
+cd $RELEASE_BASE
+eval `scram runtime -sh`
+cd $BASE
+
 ## produce the list of gridpacks
+eval `scram unsetenv -sh`; 
 echo "python copy_gridpacks.py -i "${10}" -o gridpack.list --"$5" --"$6" --"$7" --"$8
 python copy_gridpacks.py -i ${10}  -o gridpack.list --$5 --$6 --$7 --$8
 
+echo "Gridpack list to be considered by the job"
+cat gridpack.list
+
+echo "setting up CMSSW environment"
 cd $RELEASE_BASE
 eval `scram runtime -sh`
 cd $BASE

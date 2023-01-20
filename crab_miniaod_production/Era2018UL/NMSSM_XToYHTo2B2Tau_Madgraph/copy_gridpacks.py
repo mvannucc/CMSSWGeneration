@@ -20,8 +20,11 @@ if __name__ == '__main__':
     if '=' in args.input_gridpack_dir:
         args.input_gridpack_dir = args.input_gridpack_dir.split('=')[-1];
 
-    gfal_query = subprocess.Popen("gfal-ls "+args.gfal_base_path+"/"+args.input_gridpack_dir,shell=True, stdout=subprocess.PIPE);
+    gfal_query = subprocess.Popen("gfal-ls "+args.gfal_base_path+"/"+args.input_gridpack_dir,shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE);
     gfal_query.wait();
+    if gfal_query.returncode != 0:
+        sys.exit(1)
+    
     gridpack_files = gfal_query.stdout.read().decode().splitlines();
 
     gridpack_filtered_files = [];
@@ -67,5 +70,10 @@ if __name__ == '__main__':
         f.close();        
 
     ## lauch copy command
-    gfal_copy = subprocess.Popen("gfal-copy --force --from-file "+copy_file_list+" ./",shell=True, stdout=subprocess.PIPE);
+    gfal_copy = subprocess.Popen("gfal-copy --force --from-file "+copy_file_list+" ./",shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE);    
     gfal_copy.wait();
+    output,error = gfal_copy.communicate()
+    if gfal_copy.returncode != 0:
+        sys.exit(1)
+    else:
+        sys.exit(0)
