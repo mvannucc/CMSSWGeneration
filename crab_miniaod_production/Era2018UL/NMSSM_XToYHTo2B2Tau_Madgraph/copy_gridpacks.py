@@ -19,10 +19,11 @@ if __name__ == '__main__':
 
     if '=' in args.input_gridpack_dir:
         args.input_gridpack_dir = args.input_gridpack_dir.split('=')[-1];
-
+    
     gfal_query = subprocess.Popen("gfal-ls "+args.gfal_base_path+"/"+args.input_gridpack_dir,shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE);
     gfal_query.wait();
     if gfal_query.returncode != 0:
+        print "gfal query return code = ",gfal_query.returncode
         sys.exit(1)
     
     gridpack_files = gfal_query.stdout.read().decode().splitlines();
@@ -74,6 +75,7 @@ if __name__ == '__main__':
     gfal_copy.wait();
     output,error = gfal_copy.communicate()
     if gfal_copy.returncode != 0:
+        print "gfal copy return code = ",gfal_copy.returncode
         sys.exit(1)
     else:
         sys.exit(0)

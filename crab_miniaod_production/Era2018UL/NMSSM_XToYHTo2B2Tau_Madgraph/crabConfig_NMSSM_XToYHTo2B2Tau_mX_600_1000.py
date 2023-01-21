@@ -12,7 +12,7 @@ config.JobType.psetName    = 'miniaod_step_fake.py'
 config.JobType.pyCfgParams = ['nThreads=4','outputName=miniaodStep.root']
 ## To be executed on node with Arguments
 config.JobType.scriptExe   = 'scriptExe.sh'
-config.JobType.scriptArgs  = ['nEvents=1000','nThreads=4','outputName=miniaodStep.root','mxmin=600','mxmax=1000','mymin=90','mymax=150','nGridpacksPerJob=10','/store/user/rgerosa/NMSSM_XToYH_gridpacks']
+config.JobType.scriptArgs  = ['nEvents=1000','nThreads=4','outputName=miniaodStep.root','mxmin=600','mxmax=1000','mymin=90','mymax=150','nGridpacksPerJob=10','inputGridpacks=/store/user/rgerosa/NMSSM_XToYH_gridpacks']
 config.JobType.inputFiles  = ['scriptExe.sh','copy_gridpacks.py','gen_step.py','sim_step.py','digi_raw_step.py','hlt_step.py','reco_step.py','miniaod_step.py','../pileup.py']
 ## Output file to be collected
 config.JobType.outputFiles = ["miniaodStep.root"]
