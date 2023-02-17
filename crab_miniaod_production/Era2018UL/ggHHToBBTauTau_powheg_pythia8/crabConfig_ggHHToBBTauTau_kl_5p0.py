@@ -12,7 +12,7 @@ config.JobType.psetName    = 'miniaod_step_fake.py'
 config.JobType.pyCfgParams = ['nThreads=4','outputName=miniaodStep.root']
 ## To be executed on node with Arguments
 config.JobType.scriptExe   = 'scriptExe.sh'
-config.JobType.scriptArgs  = ['nEvents=1500','nThreads=4','outputName=miniaodStep.root','inputGridpack=/cvmfs/cms.cern.ch/phys_generator/gridpacks/slc6_amd64_gcc700/13TeV/powheg/V2/ggHH_EWChL_NNPDF31_13TeV_M125_cHHH5/v3/ggHH_EWChL_cHHH5_slc6_amd64_gcc700_CMSSW_10_2_5_patch1_my_ggHH_EWChL.tgz']
+config.JobType.scriptArgs  = ['nEvents=1000','nThreads=4','outputName=miniaodStep.root','inputGridpack=/cvmfs/cms.cern.ch/phys_generator/gridpacks/slc6_amd64_gcc700/13TeV/powheg/V2/ggHH_EWChL_NNPDF31_13TeV_M125_cHHH5/v3/ggHH_EWChL_cHHH5_slc6_amd64_gcc700_CMSSW_10_2_5_patch1_my_ggHH_EWChL.tgz']
 config.JobType.inputFiles  = ['scriptExe.sh','gen_step.py','sim_step.py','digi_raw_step.py','hlt_step.py','reco_step.py','miniaod_step.py','../pileup.py']
 ## Output file to be collected
 config.JobType.outputFiles = ["miniaodStep.root"]
@@ -23,7 +23,7 @@ config.JobType.maxMemoryMB = 5500
 config.JobType.numCores    = 4
 ## Data
 config.Data.splitting   = 'EventBased'
-config.Data.unitsPerJob = 1500
+config.Data.unitsPerJob = 1000
 config.Data.totalUnits  = 1500000
 config.Data.outLFNDirBase = '/store/user/rgerosa/PrivateMC/RunIISummer20UL18MiniAODv2/'
 config.Data.publication   = True

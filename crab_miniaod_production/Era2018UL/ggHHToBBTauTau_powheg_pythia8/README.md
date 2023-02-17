@@ -1,6 +1,6 @@
 # Process description
 
-Use `Powheg+Pythia8` to generate NLO+PS ggHH events in which the Higgs bosons are decayed in Pythia as $`H\tobb`$ and $`H\to\tau\tau`$.
+Use `Powheg+Pythia8` to generate NLO+PS ggHH events in which the Higgs bosons are decayed in Pythia as $H\tobb$ and $H\to\tau\tau$.
 
 # Installation
 
