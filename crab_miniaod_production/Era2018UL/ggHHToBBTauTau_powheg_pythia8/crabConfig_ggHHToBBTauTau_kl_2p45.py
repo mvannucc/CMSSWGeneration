@@ -3,7 +3,7 @@ from CRABClient.UserUtilities import config
 config = config()
 
 ## General settings
-config.General.requestName = 'rgerosa_NMSSM_XToYH_HTo2B_YTo2Tau_mX_2000_2500'
+config.General.requestName = 'rgerosa_crabConfig_ggHHToBBTauTau_kl_2p45'
 config.General.transferOutputs = True
 config.General.transferLogs = False
 ## PrivateMC type with a fake miniAOD step to circunvent crab requests (official data-tier for PrivateMC)
@@ -12,8 +12,8 @@ config.JobType.psetName    = 'miniaod_step_fake.py'
 config.JobType.pyCfgParams = ['nThreads=4','outputName=miniaodStep.root']
 ## To be executed on node with Arguments
 config.JobType.scriptExe   = 'scriptExe.sh'
-config.JobType.scriptArgs  = ['nEvents=1500','nThreads=4','outputName=miniaodStep.root','mxmin=2000','mxmax=2500','mymin=75','mymax=175','nGridpacksPerJob=15','inputGridpacks=/store/user/rgerosa/NMSSM_XToYH_gridpacks']
-config.JobType.inputFiles  = ['scriptExe.sh','copy_gridpacks.py','gen_step.py','sim_step.py','digi_raw_step.py','hlt_step.py','reco_step.py','miniaod_step.py','../pileup.py']
+config.JobType.scriptArgs  = ['nEvents=1500','nThreads=4','outputName=miniaodStep.root','inputGridpack=/cvmfs/cms.cern.ch/phys_generator/gridpacks/slc6_amd64_gcc700/13TeV/powheg/V2/ggHH_EWChL_NNPDF31_13TeV_M125_cHHH2p45/v4/ggHH_EWChL_cHHH2p45_slc6_amd64_gcc700_CMSSW_10_2_5_patch1_my_ggHH_EWChL.tgz']
+config.JobType.inputFiles  = ['scriptExe.sh','gen_step.py','sim_step.py','digi_raw_step.py','hlt_step.py','reco_step.py','miniaod_step.py','../pileup.py']
 ## Output file to be collected
 config.JobType.outputFiles = ["miniaodStep.root"]
 config.JobType.disableAutomaticOutputCollection = True
@@ -27,8 +27,7 @@ config.Data.unitsPerJob = 1500
 config.Data.totalUnits  = 1500000
 config.Data.outLFNDirBase = '/store/user/rgerosa/PrivateMC/RunIISummer20UL18MiniAODv2/'
 config.Data.publication   = True
-config.Data.outputPrimaryDataset = 'NMSSM_XToHY_HTo2B_YTo2Tau_MX_2000_2500_MY_75_175_TuneCP5_madgraph-pythia8_13TeV'
+config.Data.outputPrimaryDataset = 'GluGluToHHTo2B2Tau_node_cHHH2p45_TuneCUETP8M1_PSWeights_13TeV-powheg-pythia8'
 config.Data.outputDatasetTag = 'RunIISummer20UL18MiniAODv2_106X_upgrade2018_realistic_v11_L1v1-MINIAODSIM'
 ## Site
-config.Site.storageSite = 'T2_US_UCSD' 
-
+config.Site.storageSite = 'T2_US_UCSD'

@@ -8,7 +8,7 @@ options.register('jobNum', 0, VarParsing.multiplicity.singleton,VarParsing.varTy
 options.register('nEvents', 0, VarParsing.multiplicity.singleton,VarParsing.varType.int,"nEvents")
 options.register('nThreads', 1, VarParsing.multiplicity.singleton,VarParsing.varType.int,"nThreads")
 options.register('outputName', "genStep.root", VarParsing.multiplicity.singleton,VarParsing.varType.string,"outputName")
-options.register('inputGridpack','/cvmfs/cms.cern.ch/phys_generator/gridpacks/UL/13TeV/powheg/V2/HZJ_slc7_amd64_gcc700_CMSSW_10_6_27_ZH_HToBB_ZToLL_M125_13TeV_powheg/v1/HZJ_slc7_amd64_gcc700_CMSSW_10_6_27_ZH_HToBB_ZToLL_M125_13TeV_powheg.tgz',VarParsing.multiplicity.singleton,VarParsing.varType.string,"gridpack"),
+options.register('inputGridpack','/cvmfs/cms.cern.ch/phys_generator/gridpacks/slc6_amd64_gcc700/13TeV/powheg/V2/ggHH_EWChL_NNPDF31_13TeV_M125_cHHH1/v3/ggHH_EWChL_slc6_amd64_gcc700_CMSSW_10_2_5_patch1_my_ggHH_EWChL.tgz',VarParsing.multiplicity.singleton,VarParsing.varType.string,"gridpack"),
 
 options.parseArguments()
 
@@ -89,9 +89,15 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             pythia8PowhegEmissionVetoSettingsBlock,
             pythia8PSweightsSettingsBlock,
             processParameters = cms.vstring(
-                'POWHEG:nFinal = 3',
-                '25:onMode = off',
-                '25:onIfMatch = 21 21',
+                    'POWHEG:nFinal = 2',
+                    '25:m0 = 125.0',
+                    '25:onMode = off',
+                    '25:onIfMatch = 5 -5',
+                    '25:onIfMatch = 15 -15',
+                    'ResonanceDecayFilter:filter = on',
+                    'ResonanceDecayFilter:exclusive = on',
+                    'ResonanceDecayFilter:mothers = 25',
+                    'ResonanceDecayFilter:daughters = 5,5,15,15'
             ),
             parameterSets = cms.vstring(
                 'pythia8CommonSettings',
