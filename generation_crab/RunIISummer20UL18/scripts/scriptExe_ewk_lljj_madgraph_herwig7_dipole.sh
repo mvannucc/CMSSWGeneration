@@ -9,8 +9,8 @@ cd $RELEASE_BASE
 eval `scram runtime -sh`
 cd $BASE
 
-echo "cmsRun -e -j FrameworkJobReport.xml EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_pythia8_dipole_cfg.py jobNum="$1" "$2" "$3" outputName=lheGenStep_"$1".root"
-cmsRun -e -j FrameworkJobReport.xml EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_pythia8_dipole_cfg.py jobNum=$1 $2 $3 outputName=lheGenStep"_"$1.root
+echo "cmsRun -e -j FrameworkJobReport.xml EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_herwig7_dipole_cfg.py jobNum="$1" "$2" "$3" outputName=lheGenStep_"$1".root"
+cmsRun -e -j FrameworkJobReport.xml EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_herwig7_dipole_cfg.py jobNum=$1 $2 $3 outputName=lheGenStep"_"$1.root
 
 echo "cmsRun -e -j FrameworkJobReport.xml SIM_step_cfg.py "$3" inputName=lheGenStep_"$1".root outputName=simStep_"$1".root"
 cmsRun -e -j FrameworkJobReport.xml SIM_step_cfg.py $3 inputName=lheGenStep_$1.root outputName=simStep_$1.root

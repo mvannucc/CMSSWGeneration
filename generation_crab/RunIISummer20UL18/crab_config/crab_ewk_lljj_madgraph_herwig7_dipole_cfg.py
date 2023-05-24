@@ -2,17 +2,17 @@ from CRABClient.UserUtilities import config
 
 ## parameters 
 nThreads = 4
-datasetname = 'EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_pythia8_dipole'
+datasetname = 'EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_herwig7_dipole'
 configlhe = '../LHEGEN/'+datasetname+'_cfg.py'
 outputName = 'nanoAOD.root'
-scriptExe = '../scripts/scriptExe_ewk_lljj_madgraph_pythia8_dipole.sh'
+scriptExe = '../scripts/scriptExe_ewk_lljj_madgraph_herwig7_dipole.sh'
 nEvents = 1500
 nEventsTotal = 1500000
 
 ## config file
 config = config()
 ## General settings
-config.General.requestName = 'rgerosa_ewk_lljj_madgraph_pythia8_dipole'
+config.General.requestName = 'rgerosa_ewk_lljj_madgraph_herwig7_dipole'
 config.General.transferOutputs = True
 config.General.transferLogs = False
 ## PrivateMC type with a fake miniAOD step to circunvent crab requests (official data-tier for PrivateMC)
