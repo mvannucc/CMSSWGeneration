@@ -19,12 +19,17 @@ config.General.transferLogs = False
 config.JobType.pluginName  = 'PrivateMC'
 config.JobType.psetName    = configlhe
 config.JobType.pyCfgParams = ['nThreads='+str(nThreads),'outputName='+outputName]
+print(config.JobType.pyCfgParams)
 ## To be executed on node with Arguments
 config.JobType.scriptExe   = scriptExe
+print(config.JobType.scriptExe)
 config.JobType.scriptArgs  = ['nEvents='+str(nEvents),'nThreads='+str(nThreads),'outputName='+outputName]
-config.JobType.inputFiles  = [nEvents,'../DIGI_RAW_premix_step_cfg.py','../HLT_step_cfg.py','../MINIAOD_step_cfg.py','../NANOAODv9_step_cfg.py','../RECO_step_cfg.py','../SIM_step_cfg.py','../pileup_premix.py',configlhe]
+print(config.JobType.scriptArgs)
+config.JobType.inputFiles  = ['../DIGI_RAW_premix_step_cfg.py','../HLT_step_cfg.py','../MINIAOD_step_cfg.py','../NANOAODv9_step_cfg.py','../RECO_step_cfg.py','../SIM_step_cfg.py','../pileup.py',configlhe]
+print(config.JobType.inputFiles)
 ## Output file to be collected
 config.JobType.outputFiles = [outputName]
+print(config.JobType.outputFiles)
 config.JobType.disableAutomaticOutputCollection = True
 ## Memory, cores, cmssw
 config.JobType.allowUndistributedCMSSW = True
