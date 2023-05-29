@@ -22,7 +22,7 @@ config.JobType.pyCfgParams = ['nThreads='+str(nThreads),'outputName='+outputName
 ## To be executed on node with Arguments
 config.JobType.scriptExe   = scriptExe
 config.JobType.scriptArgs  = ['nEvents='+str(nEvents),'nThreads='+str(nThreads),'outputName='+outputName]
-config.JobType.inputFiles  = [nEvents,'../DIGI_RAW_premix_step_cfg.py','../HLT_step_cfg.py','../MINIAOD_step_cfg.py','../NANOAODv9_step_cfg.py','../RECO_step_cfg.py','../SIM_step_cfg.py','../pileup.py',configlhe]
+config.JobType.inputFiles  = ['../DIGI_RAW_premix_step_cfg.py','../HLT_step_cfg.py','../MINIAOD_step_cfg.py','../NANOAODv9_step_cfg.py','../RECO_step_cfg.py','../SIM_step_cfg.py','../pileup.py',configlhe]
 ## Output file to be collected
 config.JobType.outputFiles = [outputName]
 config.JobType.disableAutomaticOutputCollection = True

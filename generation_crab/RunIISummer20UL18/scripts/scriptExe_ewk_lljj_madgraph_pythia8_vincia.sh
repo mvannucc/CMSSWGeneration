@@ -7,8 +7,31 @@ source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 cd $RELEASE_BASE
 eval `scram runtime -sh`
+
+## installation pythia8 last version
+curl -s --insecure https://pythia.org/download/pythia83/pythia8308.tgz -retry 2 --create-dirs -o  pythia8308.tgz 
+tar xfz pythia8308.tgz 
+rm pythia8308.tgz
+cd pythia8308/    
+hepmc=$(scram tool info hepmc | grep HEPMC_BASE | sed -e "s/HEPMC_BASE=//g")
+lhapdf=$(scram tool info lhapdf | grep LHAPDF_BASE | sed -e "s/LHAPDF_BASE=//g")
+./configure --enable-shared  --with-hepmc2=$hepmc --with-lhapdf6=$lhapdf 
+make -j 4
+export PYTHIA_BASE=$PWD 
+cd ..
+path_to_replace=$(scram tool info pythia8 | grep PYTHIA8_BASE | sed -e "s/PYTHIA8_BASE=//g")
+scp $RELEASE_BASE/config/toolbox/$SCRAM_ARCH/tools/selected/pythia8.xml ./
+sed -i "s|$path_to_replace|$PYTHIA_BASE|g"  pythia8.xml
+mv pythia8.xml $RELEASE_BASE/config/toolbox/$SCRAM_ARCH/tools/selected/
+scram setup pythia8
+
+## update pythia8 interface for vincia
+scp -r $BASE/generator_interface_pythia8.tar.gz ./ 
+tar -xf generator_interface_pythia8.tar.gz
+scram b -j 4
 cd $BASE
 
+## execute the event generation
 echo "cmsRun -e -j FrameworkJobReport.xml EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_pythia8_vincia_cfg.py jobNum="$1" "$2" "$3" outputName=lheGenStep_"$1".root"
 cmsRun -e -j FrameworkJobReport.xml EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_pythia8_vincia_cfg.py jobNum=$1 $2 $3 outputName=lheGenStep"_"$1.root
 

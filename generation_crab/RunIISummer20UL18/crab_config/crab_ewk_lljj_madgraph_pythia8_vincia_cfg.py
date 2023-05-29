@@ -2,17 +2,17 @@ from CRABClient.UserUtilities import config
 
 ## parameters 
 nThreads = 4
-datasetname = 'EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_herwig7_angular'
+datasetname = 'EWK_LLJJ_MLL_50_MJJ_120_TuneCP5_13TeV_madgraph_pythia8_vincia'
 configlhe = '../LHEGEN/'+datasetname+'_cfg.py'
 outputName = 'nanoAOD.root'
-scriptExe = '../scripts/scriptExe_ewk_lljj_madgraph_herwig7_angular.sh'
+scriptExe = '../scripts/scriptExe_ewk_lljj_madgraph_pythia8_vincia.sh'
 nEvents = 1500
 nEventsTotal = 1500000
 
 ## config file
 config = config()
 ## General settings
-config.General.requestName = 'rgerosa_ewk_lljj_madgraph_herwig7_angular'
+config.General.requestName = 'rgerosa_ewk_lljj_madgraph_pythia8_vincia'
 config.General.transferOutputs = True
 config.General.transferLogs = False
 ## PrivateMC type with a fake miniAOD step to circunvent crab requests (official data-tier for PrivateMC)
@@ -22,7 +22,7 @@ config.JobType.pyCfgParams = ['nThreads='+str(nThreads),'outputName='+outputName
 ## To be executed on node with Arguments
 config.JobType.scriptExe   = scriptExe
 config.JobType.scriptArgs  = ['nEvents='+str(nEvents),'nThreads='+str(nThreads),'outputName='+outputName]
-config.JobType.inputFiles  = ['../DIGI_RAW_premix_step_cfg.py','../HLT_step_cfg.py','../MINIAOD_step_cfg.py','../NANOAODv9_step_cfg.py','../RECO_step_cfg.py','../SIM_step_cfg.py','../pileup.py',configlhe]
+config.JobType.inputFiles  = [nEvents,'../DIGI_RAW_premix_step_cfg.py','../HLT_step_cfg.py','../MINIAOD_step_cfg.py','../NANOAODv9_step_cfg.py','../RECO_step_cfg.py','../SIM_step_cfg.py','../pileup.py',configlhe]
 ## Output file to be collected
 config.JobType.outputFiles = [outputName]
 config.JobType.disableAutomaticOutputCollection = True
