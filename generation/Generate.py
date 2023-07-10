@@ -7,6 +7,11 @@ from random import randint
 import glob
 import shutil
 from textwrap import dedent
+def insensitive_glob(pattern):
+    def either(c):
+        return '[%s%s]' % (c.lower(), c.upper()) if c.isalpha() else c
+    return glob.glob(''.join(map(either, pattern)))
+
 def create_CMSSW_tar(release, singularity):
 
     if singularity:
@@ -37,13 +42,17 @@ def create_CMSSW_tar(release, singularity):
         script += "scram project CMSSW {}\n".format(release)
         script += "cd {}/src\n".format(release)
         script += "eval `scramv1 runtime -sh`\n"
-        if release =="CMSSW_10_2_22":
+        if release =="CMSSW_10_2_22" or release =="CMSSW_10_2_24":
             script += "git cms-init\n"
             script += "git cms-merge-topic giorgiopizz:patch_10_2_22_nanoAOD_reweight\n"
-        elif release == "CMSSW_10_2_6":
-            print("--> Patching 10_2_6")
-            script += "git cms-init\n"
-            script += "git cms-merge-topic GiacomoBoldrini:patch_10_2_6_gridpack\n"
+            # Little fix because last commit of giorgio branch does not work in 10_2_22 
+            # but does work in 10_2_24
+            if release =="CMSSW_10_2_22":
+               script += "git checkout 0c5417182b0\n" 
+        #elif release == "CMSSW_10_2_6":
+        #    print("--> Patching 10_2_6")
+        #    script += "git cms-init\n"
+        #    script += "git cms-merge-topic GiacomoBoldrini:patch_10_2_6_gridpack\n"
         script += "scram b\n"
         script += "cd ../..\n"
         script += "tar -zcf {}.tgz {}\n".format(release, release)
@@ -108,7 +117,8 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
     inputsCfg = glob.glob("data/input_{}/*.py".format(year))
     inputsCfg = list(map(lambda k: os.path.abspath(k), inputsCfg))
     fileToTransfer.extend(inputsCfg)
-    outputFile = glob.glob("data/input_{}/*Nano*.py".format(year))[0].split("/")[-1].split("_1_")[0]
+    print(insensitive_glob("data/input_{}/*{}*.py".format(year, totalSteps[-1])))
+    outputFile = insensitive_glob("data/input_{}/*{}*.py".format(year, totalSteps[-1]))[0].split("/")[-1].split("_1_")[0]
     for cmssw in cmssws:
         fileToTransfer.append(os.path.abspath(glob.glob("data/CMSSWs/{}.tgz".format(cmssw))[0]))
      
@@ -121,8 +131,9 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
         else: 
            jdl += "arguments = $(Step)\n"
         jdl += "use_x509userproxy = true\n"
-        jdl += " +JobFlavour = \"workday\"\n"
+        jdl += " +JobFlavour = \"nextweek\"\n"
         jdl += "request_cpus = 8 \n"
+        jdl += "request_disk = 35000000 \n" 
         jdl += "should_transfer_files = YES\n"
         jdl += "Error = log/$(proc).err_$(Step)\n"
         jdl += "Output = log/$(proc).out_$(Step)\n"
@@ -173,8 +184,10 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
                 totalStepsCorrect.insert(totalStepsCorrect.index(step),step)       
     print(stepFiles, totalStepsCorrect)
     print(list(zip(totalStepsCorrect, stepFiles)))        
-  
-    totalSteps.insert(1, "premix")
+ 
+    # premix has 2 steps tipically
+    if "premix" in totalSteps: 
+       totalSteps.insert(1, "premix")
     filesToRemove = [gridpack.split("/")[-1]]
     for k, file in zip(totalStepsCorrect, stepFiles):
         wrapper += "#Working on {} step\n\n".format(k)
@@ -204,14 +217,14 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
         wrapper += "date\n"
         wrapper += "cmsRun {}\n".format(file)
         if removeOldRoot:
-            if k == "lhe":
+            if k == "lhe" and totalSteps[-1] != "lhe":
                 filesToRemove.append(file.split("_")[0]+".root")
                 filesToRemove.append(file.split("_")[0]+"_inLHE.root")
               
-            elif k == "premix" and "_1_" not in file:
+            elif k == "premix" and "_1_" not in file and totalSteps[-1] != "premix":
                 filesToRemove.append(file.split("_")[0]+".root")
                 filesToRemove.append(file.split("_")[0]+"_0.root")
-            elif k == "miniAOD":
+            elif k == "miniAOD" and totalSteps[-1] != "miniAOD":
                 filesToRemove.append(file.split("_")[0]+".root")
         wrapper += "\n\n"
     wrapper += "rm {}\n".format(" ".join(filesToRemove))
