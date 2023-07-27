@@ -92,7 +92,7 @@ $DEFAULT_PDF_MEMBERS = reweight_PDF     ! if pdlabel=lhapdf, this is the lhapdf 
 #*********************************************************************
 # Minimum and maximum pt's (for max, -1 means no cut)                *
 #*********************************************************************
-  0.0   = ptj ! minimum pt for the jets
+  0.1   = ptj ! minimum pt for the jets
   0.0   = ptb ! minimum pt for the b
   0.0   = pta ! minimum pt for the photons
   0.0   = ptl ! minimum pt for the charged leptons
@@ -106,7 +106,7 @@ $DEFAULT_PDF_MEMBERS = reweight_PDF     ! if pdlabel=lhapdf, this is the lhapdf 
 #*********************************************************************
 # Minimum and maximum E's (in the center of mass frame)              *
 #*********************************************************************
-  0.0   = ptj ! minimum pt for the jets
+  0.1   = ptj ! minimum pt for the jets
   0.0   = ptb ! minimum pt for the b
   0.0   = pta ! minimum pt for the photons
   0.0   = ptl ! minimum pt for the charged leptons
@@ -120,7 +120,7 @@ $DEFAULT_PDF_MEMBERS = reweight_PDF     ! if pdlabel=lhapdf, this is the lhapdf 
 #*********************************************************************
 # Minimum and maximum E's (in the center of mass frame)              *
 #*********************************************************************
-  0.0   = ej ! minimum E for the jets
+  0.1   = ej ! minimum E for the jets
   0.0   = eb ! minimum E for the b
   0.0   = ea ! minimum E for the photons
   0.0   = el ! minimum E for the charged leptons
@@ -131,7 +131,7 @@ $DEFAULT_PDF_MEMBERS = reweight_PDF     ! if pdlabel=lhapdf, this is the lhapdf 
 #*********************************************************************
 # Maximum and minimum absolute rapidity (for max, -1 means no cut)   *
 #*********************************************************************
-  -1.0  = etaj ! max rap for the jets
+  5.0   = etaj ! max rap for the jets
   -1.0  = etab ! max rap for the b
   -1.0  = etaa ! max rap for the photons
   -1.0  = etal ! max rap for the charged leptons
@@ -142,7 +142,7 @@ $DEFAULT_PDF_MEMBERS = reweight_PDF     ! if pdlabel=lhapdf, this is the lhapdf 
 #*********************************************************************
 # Minimum and maximum DeltaR distance                                *
 #*********************************************************************
-  0.0   = drjj ! min distance between jets
+  0.001 = drjj ! min distance between jets
   0.0   = drbb ! min distance between b's
   0.0   = drll ! min distance between leptons
   0.0   = draa ! min distance between gammas
