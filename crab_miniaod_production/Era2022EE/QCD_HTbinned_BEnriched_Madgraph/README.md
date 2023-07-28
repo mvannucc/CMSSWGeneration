@@ -30,11 +30,13 @@ In order to produce the gridpacks of interest please follow the guidelines below
   ```sh
   cd CMSSWGeneration/crab_miniaod_production/Era2022EE/QCD_HTbinned_BEnriched_Madgraph;
   python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --njet 2 3 4 5 --htbin 200,350 350,500 500,750 750,1000 1000,-1
+  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --nbjet 2 3 --htbin 200,350 350,500 500,750 750,1000 1000,-1
   ```
   * `-i`: folder containing the base MG cards `input_cards`
   * `-d`: path to the `genproductions` tar archive that is created with the instructions listed above
   * `-s`: relative path to the gen production script to be used for MG
   * `--njet`: list of njets card that needs to be considered for the gridpack generation
+  * `--nbjet`: list of nbjets card that needs to be considered for the gridpack generation. Each process contains 3,4,5 jet events with nbjet as hadron flavour multiplicity
   * `--htbin`: list of htbin card that needs to be considered for the gridpack generation
   * `-j`: directory where condorHT job files are created
   * `-o`: output folder where the gridpacks are copied

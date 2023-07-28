@@ -17,7 +17,8 @@ parser.add_argument('-d', '--input-genprod-dir', type=str, default='',help='gen 
 parser.add_argument('-s', '--gridpack-script', type=str, default='genproductions/bin/MadGraph5_aMCatNLO/gridpack_generation.sh',help='genprod script to be used');
 parser.add_argument('-o', '--output-dir', type=str, default='./output_dir',help='output directory where to copy the gridpack')
 parser.add_argument('-n', '--njet', type=int, nargs="+", default=[], help='list of the njet values to be generated')
-parser.add_argument('-b', '--htbin', type=parse_tuple, nargs="+", default=[], help='list of the htmin and htmax values as a tuple')
+parser.add_argument('-b', '--nbjet', type=int, nargs="+", default=[], help='list of the nbjet values to be generated')
+parser.add_argument('-t', '--htbin', type=parse_tuple, nargs="+", default=[], help='list of the htmin and htmax values as a tuple')
 parser.add_argument('-j', '--job-dir', type=str, default='job_gridpacks', help='directory where gridpacks jobs folder will be created')
 parser.add_argument('-q', '--queque', type=str, default="tomorrow", help='queque for condorHT')
 parser.add_argument('-e', '--command', type=str, default='none', help="possible commands are: submit and none", choices=['submit','none']);
@@ -30,11 +31,24 @@ if __name__ == '__main__':
         os.makedirs(args.job_dir);
 
     cwd = os.getcwd();
-
-    for njet in args.njet:
+    if args.njet and args.nbjet:
+        sys.exit("You cannot provide njet binning and nbjet binning simultaneously --> exit");
+    elif args.njet and not args.nbjet:
+        jet_binning = args.njet;
+    elif not args.njet and args.nbjet:
+        jet_binning = args.nbjet;
+    else:
+        sys.exit("You should provid either the njet or nbjet binning --> exit");
+        
+    for njet in jet_binning:
         for ht in args.htbin:
-            print ("create gridpack job for njet=",njet," htbin=",ht);
-            jetbin = "%djet"%(int(njet));
+            if args.njet:
+                print ("create gridpack job for njet=",njet," htbin=",ht);
+                jetbin = "%djet"%(int(njet));
+            else:
+                print ("create gridpack job for nbjet=",njet," htbin=",ht);
+                jetbin = "%dbjet"%(int(njet));
+                
             htbin  = "HT_%d_%d"%(int(ht[0]),int(ht[1]));
             jdir = "QCD_bEnriched_"+jetbin+"_"+htbin;
             path = os.path.join(args.job_dir,jdir);

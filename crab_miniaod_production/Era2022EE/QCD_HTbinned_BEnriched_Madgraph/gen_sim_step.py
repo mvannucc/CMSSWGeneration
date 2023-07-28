@@ -119,9 +119,9 @@ process.genstepfilter.triggerConditions=cms.vstring("generation_step")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '124X_mcRun3_2022_realistic_postEE_v1', '')
 
-from Configuration.Generator.Pythia8CommonSettings_cfi import pythia8CommonSettingsBlock
-from Configuration.Generator.MCTunes2017.PythiaCP5Settings_cfi import pythia8CP5SettingsBlock
-from Configuration.Generator.PSweightsPythia.PythiaPSweightsSettings_cfi import pythia8PSweightsSettingsBlock
+from Configuration.Generator.Pythia8CommonSettings_cfi import *
+from Configuration.Generator.MCTunesRun3ECM13p6TeV.PythiaCP5Settings_cfi import *
+from Configuration.Generator.PSweightsPythia.PythiaPSweightsSettings_cfi import *
 
                                      
 process.generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
@@ -137,11 +137,11 @@ process.generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
             'JetMatching:etaJetMax = 5.',
             'JetMatching:coneRadius = 1.',
             'JetMatching:slowJetPower = 1',
-            'JetMatching:qCut = 19.', #this is the actual merging scale                                                                                                                         
-            'JetMatching:nQmatch = 5', #4 corresponds to 4-flavour scheme (no matching of b-quarks), 5 for 5-flavour scheme                                                                      
-            'JetMatching:nJetMax = 5', #number of partons in born matrix element for highest multiplicity                                                                                             
-            'JetMatching:doShowerKt = off', #off for MLM matching, turn on for shower-kT matching                                                                                                    
-            'TimeShower:mMaxGamma = 4.0',
+            'JetMatching:doShowerKt = off',
+            'JetMatching:qCut = 14.',
+            'JetMatching:nQmatch = 5',
+            'JetMatching:nJetMax = 5',
+            'TimeShower:mMaxGamma = 4.0'
         ),
         parameterSets = cms.vstring(
             'pythia8CommonSettings',
