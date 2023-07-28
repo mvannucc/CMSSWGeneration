@@ -7,5 +7,4 @@ generate p p > bquark bquark bquark @0
 generate p p > bquark bquark bquark j @1
 generate p p > bquark bquark bquark j j @2
 
-output QCD_bEnriched_2bjet_HT_$X_$Y
-
+output QCD_bEnriched_3bjet_HT_$X_$Y
