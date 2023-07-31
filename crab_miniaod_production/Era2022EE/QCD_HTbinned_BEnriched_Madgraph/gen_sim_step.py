@@ -140,7 +140,7 @@ process.generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
             'JetMatching:doShowerKt = off',
             'JetMatching:qCut = 14.',
             'JetMatching:nQmatch = 5',
-            'JetMatching:nJetMax = 5',
+            'JetMatching:nJetMax = 4',
             'TimeShower:mMaxGamma = 4.0'
         ),
         parameterSets = cms.vstring(

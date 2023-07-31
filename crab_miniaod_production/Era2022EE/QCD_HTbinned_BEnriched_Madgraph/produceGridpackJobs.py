@@ -20,7 +20,9 @@ parser.add_argument('-n', '--njet', type=int, nargs="+", default=[], help='list 
 parser.add_argument('-b', '--nbjet', type=int, nargs="+", default=[], help='list of the nbjet values to be generated')
 parser.add_argument('-t', '--htbin', type=parse_tuple, nargs="+", default=[], help='list of the htmin and htmax values as a tuple')
 parser.add_argument('-j', '--job-dir', type=str, default='job_gridpacks', help='directory where gridpacks jobs folder will be created')
+parser.add_argument('-c', '--ncpu', type=int, default=1, help="requested number of cpus")
 parser.add_argument('-q', '--queque', type=str, default="tomorrow", help='queque for condorHT')
+parser.add_argument('-p', '--proxy', type=str, default='', help='location of proxy file')
 parser.add_argument('-e', '--command', type=str, default='none', help="possible commands are: submit and none", choices=['submit','none']);
 
 if __name__ == '__main__':
@@ -83,12 +85,16 @@ if __name__ == '__main__':
             files = os.listdir(path)
             for fname in files:
                 shutil.move(os.path.join(path,fname),os.path.join(path,fname.replace("QCD_bEnriched_"+jetbin+"_HT_X_Y",jdir)))
-                
+
+            if args.proxy:
+                shutil.copy(args.proxy,"./");
             ## write the job to be executed
             script_path = os.path.dirname(args.gridpack_script);
             script_name = os.path.basename(args.gridpack_script);
             job_script = open("%s/condor_job.sh"%(path),"w");
             job_script.write("#!/bin/bash\n");   
+            if args.proxy:                
+                job_script.write('export X509_USER_PROXY=$1\n');
             job_script.write('rsync -ua '+args.input_genprod_dir+' ./\n');
             job_script.write('tar -xf '+args.input_genprod_dir.split("/")[-1]+'\n');
             job_script.write('cd '+script_path+'\n');            
@@ -111,6 +117,11 @@ if __name__ == '__main__':
             condor_job.write("universe = vanilla\n");
             condor_job.write("transfer_output_files = \"\"\n");
             condor_job.write("+JobFlavour = \""+args.queque+"\"\n");
+            condor_job.write("request_cpus = "+str(args.ncpu)+"\n");
+            if args.proxy:
+                condor_job.write("Proxy_path = "+os.getcwd()+"/"+args.proxy.split("/")[-1]+"\n");
+                condor_job.write("transfer_input_files = $(Proxy_path)\n");
+                condor_job.write("arguments = "+args.proxy.split("/")[-1]+"\n");
             condor_job.write("queue\n");
             condor_job.close();
 

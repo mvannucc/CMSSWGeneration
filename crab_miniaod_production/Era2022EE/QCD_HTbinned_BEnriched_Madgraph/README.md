@@ -29,8 +29,9 @@ In order to produce the gridpacks of interest please follow the guidelines below
 * Submit gridpack generation: 
   ```sh
   cd CMSSWGeneration/crab_miniaod_production/Era2022EE/QCD_HTbinned_BEnriched_Madgraph;
-  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --njet 2 3 4 5 --htbin 200,350 350,500 500,750 750,1000 1000,-1
-  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --nbjet 2 3 --htbin 200,350 350,500 500,750 750,1000 1000,-1
+  voms-proxy-init -voms cms --valid 192:00
+  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --njet 2 3 4 5 --htbin 200,350 350,500 500,750 750,1000 1000,-1 --proxy /tmp/x509up_u21491 --ncpu 4
+  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --nbjet 2 3 --htbin 200,350 350,500 500,750 750,1000 1000,-1 --proxy /tmp/x509up_u21491 --ncpu 4 --queque testmatch
   ```
   * `-i`: folder containing the base MG cards `input_cards`
   * `-d`: path to the `genproductions` tar archive that is created with the instructions listed above
@@ -39,6 +40,8 @@ In order to produce the gridpacks of interest please follow the guidelines below
   * `--nbjet`: list of nbjets card that needs to be considered for the gridpack generation. Each process contains 3,4,5 jet events with nbjet as hadron flavour multiplicity
   * `--htbin`: list of htbin card that needs to be considered for the gridpack generation
   * `-j`: directory where condorHT job files are created
+  * `--ncpu`: number of cpus to use
+  * `--proxy`: ship the proxy file if needed
   * `-o`: output folder where the gridpacks are copied
   * `--command`: either `submit` or `none`
 * Run the script from an `lxplus` machine and select the best scheduler available via `myschedd bump`

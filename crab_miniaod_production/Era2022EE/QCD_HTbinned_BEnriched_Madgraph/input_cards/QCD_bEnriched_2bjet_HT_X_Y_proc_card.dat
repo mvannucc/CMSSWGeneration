@@ -6,6 +6,7 @@ define bquark = b b~
 generate p p > bquark bquark j @0
 generate p p > bquark bquark j j @1
 generate p p > bquark bquark j j j @2
+generate p p > bquark bquark j j j j @3
 
 output QCD_bEnriched_2bjet_HT_$X_$Y
 
