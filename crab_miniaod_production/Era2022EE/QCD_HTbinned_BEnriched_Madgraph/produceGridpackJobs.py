@@ -23,7 +23,8 @@ parser.add_argument('-j', '--job-dir', type=str, default='job_gridpacks', help='
 parser.add_argument('-c', '--ncpu', type=int, default=1, help="requested number of cpus")
 parser.add_argument('-q', '--queque', type=str, default="tomorrow", help='queque for condorHT')
 parser.add_argument('-p', '--proxy', type=str, default='', help='location of proxy file')
-parser.add_argument('-e', '--command', type=str, default='none', help="possible commands are: submit and none", choices=['submit','none']);
+parser.add_argument('-g', '--options-for-gridpack', type=str, default='', help='additional options to give to the gridpack script')
+parser.add_argument('-e', '--command', type=str, default='none', help="possible commands are: submit, card, and none", choices=['submit','card','none']);
 
 if __name__ == '__main__':
     
@@ -86,6 +87,9 @@ if __name__ == '__main__':
             for fname in files:
                 shutil.move(os.path.join(path,fname),os.path.join(path,fname.replace("QCD_bEnriched_"+jetbin+"_HT_X_Y",jdir)))
 
+            if args.command == "card":
+                continue;
+
             if args.proxy:
                 shutil.copy(args.proxy,"./");
             ## write the job to be executed
@@ -99,7 +103,10 @@ if __name__ == '__main__':
             job_script.write('tar -xf '+args.input_genprod_dir.split("/")[-1]+'\n');
             job_script.write('cd '+script_path+'\n');            
             job_script.write('rsync -ua '+cwd+'/'+path+' ./\n');
-            job_script.write('./'+os.path.basename(script_name)+' '+jdir+' '+jdir+'\n');
+            if args.options_for_gridpack:
+                job_script.write('./'+os.path.basename(script_name)+' '+jdir+' '+jdir+' '+args.options_for_gridpack+'\n');
+            else:
+                job_script.write('./'+os.path.basename(script_name)+' '+jdir+' '+jdir+'\n');
             job_script.write('mkdir -p '+args.output_dir+'\n');
             job_script.write('rsync -ua *tarball.tar.xz '+args.output_dir+'/\n');
             job_script.close();

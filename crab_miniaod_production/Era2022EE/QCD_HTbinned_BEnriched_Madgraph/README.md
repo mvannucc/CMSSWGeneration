@@ -15,23 +15,23 @@ cd CMSSWGeneration/crab_miniaod_production/Era2022EE/QCD_HTbinned_BEnriched_Madg
 
 # Gridpack generation
 
-First checkout the genproduction repository used for the UL production (with the MG version for UL) and create a tarball in order to be copied to the condorHT node:
+First checkout the genproduction repository used for the UL production (with the MG version for UL) and create a tarball in order to be copied to the condorHT node. Checkout outside a cmssw release.
 
 ```sh
 git clone https://github.com/cms-sw/genproductions.git 
-tar -czvf genproductions.tar.gz genproductions
+tar -czvf genproductions_run3.tar.gz genproductions
 ```
 		
-In order to produce the gridpacks of interest please follow the guidelines below:
+In order to produce the gridpacks please follow the guidelines below:
 * GEN-POG twiki with instructions for MG event generation [[MadGraph-Instructions]](https://twiki.cern.ch/twiki/bin/view/CMS/QuickGuideMadGraph5aMCatNLO)
-* The directory `InputMadgraphCards` contains all run/proc/customize cards needed for each sample to be generated i.e. each $m_{X}$ and $m_{Y}$ value. These are the inputs needed for each gridpack generation
-* The gridpack generation for each mass point happens using the CERN CondorHT batch by using the official CMS GEN group submission workflow contained in `genproductions/bin/MadGraph5_aMCatNLO/`. In particular, the `gridpack_generation.sh` and a custom CondorHT CERN submission scripts `produceGridpackJobs.py` are used;
+
+In order to automatically submit gridpacks generation as condor-jobs you can use the following recipe. Please be aware that this works well for fast processes i.e. every job computes the gridpack locally without splitting in many child condor tasks. In case heavy gridpacks needs to be built, please look the second part of this guideline
+* Run the script from an `lxplus` machine and select the best scheduler available via `myschedd bump`
 * Submit gridpack generation: 
   ```sh
   cd CMSSWGeneration/crab_miniaod_production/Era2022EE/QCD_HTbinned_BEnriched_Madgraph;
   voms-proxy-init -voms cms --valid 192:00
-  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --njet 2 3 4 5 --htbin 200,350 350,500 500,750 750,1000 1000,-1 --proxy /tmp/x509up_u21491 --ncpu 4
-  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --nbjet 2 3 --htbin 200,350 350,500 500,750 750,1000 1000,-1 --proxy /tmp/x509up_u21491 --ncpu 4 --queque testmatch
+  python3 produceGridpackJobs.py -i input_cards -d /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz -j job_gridpack_qcd -o /eos/cms/store/user/rgerosa/QCD_HTbinned_BEnriched_gridpacks --command submit --njet 2 3 4 5 --htbin 200,350 350,500 500,750 750,1000 1000,-1 --proxy /tmp/x509up_u21491 --ncpu 4 --gridpack-script genproductions/bin/MadGraph5_aMCatNLO/gridpack_generation.sh
   ```
   * `-i`: folder containing the base MG cards `input_cards`
   * `-d`: path to the `genproductions` tar archive that is created with the instructions listed above
@@ -42,9 +42,33 @@ In order to produce the gridpacks of interest please follow the guidelines below
   * `-j`: directory where condorHT job files are created
   * `--ncpu`: number of cpus to use
   * `--proxy`: ship the proxy file if needed
+  * `--options-for-gridpack`: options that needs to be give for the gridpack production
   * `-o`: output folder where the gridpacks are copied
   * `--command`: either `submit` or `none`
-* Run the script from an `lxplus` machine and select the best scheduler available via `myschedd bump`
+
+In the case of heavy gridpacks, like b-quark enriched with up to 6 jets in the final state, gripacks needs to be run manually as tmux session on lxplus machines or a local machine that can be interfaced with condor job. In order to do so, please consider the following guideline to create a keytab credential file:
+* Procedure is described here [[AFS Permissions]](https://twiki.cern.ch/twiki/bin/view/CMS/QuickGuideMadGraph5aMCatNLO#Monitoring_afs_permissions_for_c)
+* This creates a ktmux session that can be used to run the official `submit_condor_gridpack_generation.sh` with condor script
+* In order to submit the gridpack production, all the input run/proc/customized cards need to be produced as follows
+  ```sh
+  cd CMSSWGeneration/crab_miniaod_production/Era2022EE/QCD_HTbinned_BEnriched_Madgraph;
+  scp /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz ./
+  tar -xf genproductions_run3.tar.gz
+  python3 produceGridpackJobs.py -i input_cards -j card_for_gridpacks --command card --nbjet 2 3 --htbin 200,350 350,500 500,750 750,1000 1000,-1
+  ```
+* Finally, each gridpack generation needs to be launched within a tmux session as follows:
+  ```sh
+  ktmux;
+  cd /tmp/rgerosa/;
+  scp -r /eos/cms/store/user/rgerosa/genproductions_run3.tar.gz ./
+  tar -xf genproductions_run3.tar.gz
+  rm -rf genproductions_run3.tar.gz
+  cd -;
+  scp -r card_for_gridpacks/* /tmp/rgerosa/genproductions/bin/MadGraph5_aMCatNLO/;
+  cd -;
+  cd genproductions/bin/MadGraph5_aMCatNLO/;
+  ./submit_condor_gridpack_generation.sh QCD_bEnriched_2bjet_HT_200_350 QCD_bEnriched_2bjet_HT_200_350
+  ```
 
 # LHE+GEN+SIM step
 
