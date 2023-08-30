@@ -1,0 +1,259 @@
+WARNING  glidein_config not defined () in singularity_lib.sh. Some functions like advertise and error_gen will be limited.
+DEBUG (/srv/.gwms-user-job-wrapper.sh) GWMS singularity wrapper (20201013_4f2282193f60a862f4e41f47b1b875d0_d3b9bb53c0a20395cc95092213618bf8) starting, Tue Aug 29 18:38:46 CEST 2023. Imported singularity_lib.sh. glidein_config (NONE).
+DEBUG (/srv/.gwms-user-job-wrapper.sh) /srv/.gwms-user-job-wrapper.sh, in /srv, list: total 120512
+drwx------  5 pilcms01 cmspil     4096 Aug 29 18:38 .
+drwxr-xr-x 24 pilcms01 cmspil      760 Aug 29 18:38 ..
+-rw-r--r--  1 pilcms01 cmspil      357 Aug 29 18:38 .LOG_.gwms-user-job-wrapper.sh.21.txt
+drwx------  2 pilcms01 cmspil     4096 Aug 29 18:38 .apptainer
+-rwx------  1 pilcms01 cmspil       48 Aug 29 18:38 .chirp.config
+-rwxr-xr-x  1 pilcms01 cmspil    11760 Aug 29 18:38 .gwms-user-job-wrapper.sh
+drwxr-xr-x  5 pilcms01 cmspil     4096 Aug 29 18:38 .gwms.d
+drwxr-xr-x  2 pilcms01 cmspil     4096 Aug 29 18:38 .gwms_aux
+-rw-r--r--  1 pilcms01 cmspil     8644 Aug 29 18:38 .job.ad
+-rw-r--r--  1 pilcms01 cmspil    17558 Aug 29 18:38 .machine.ad
+-rw-r--r--  1 pilcms01 cmspil  6060070 Aug 29 18:38 CMSSW_10_2_24_patch1_ZV_EFT.tgz
+-rw-r--r--  1 pilcms01 cmspil   331770 Aug 29 18:38 CMSSW_9_3_19.tgz
+-rw-r--r--  1 pilcms01 cmspil   356761 Aug 29 18:38 CMSSW_9_4_7.tgz
+-rw-r--r--  1 pilcms01 cmspil 28090458 Aug 29 18:38 SMP-RunIIFall17DRPremix-00331_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     4603 Aug 29 18:38 SMP-RunIIFall17DRPremix-00331_2_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     9916 Aug 29 18:38 SMP-RunIIFall17MiniAODv2-00338_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     4104 Aug 29 18:38 SMP-RunIIFall17NanoAODv7-00268_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     9615 Aug 29 18:38 SMP-RunIIFall17wmLHEGS-00271_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     7764 Aug 29 18:38 _condor_stderr
+-rw-r--r--  1 pilcms01 cmspil      126 Aug 29 18:38 _condor_stdout
+-rwxr-xr-x  1 pilcms01 cmspil     2696 Aug 29 18:38 condor_exec.exe
+-rw-------  1 pilcms01 cmspil    12426 Aug 29 18:38 x509up_u12760
+-rw-r--r--  1 pilcms01 cmspil 88411468 Aug 29 18:38 zztatajjdim6_ewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz
+DEBUG (/srv/.gwms-user-job-wrapper.sh) calling singularity_setup_inside_env w/ /home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335 (/home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335).
+DEBUG (/srv/.gwms-user-job-wrapper.sh) changed X509_USER_PROXY: /home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335/x509up_u12760 => /srv/x509up_u12760
+DEBUG (/srv/.gwms-user-job-wrapper.sh) changed _CONDOR_MACHINE_AD: /home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335/.machine.ad => /srv/.machine.ad
+DEBUG (/srv/.gwms-user-job-wrapper.sh) String '/execute/dir_' in _CONDOR_EXECUTE (/home/condor/execute/dir_7422/glide_0IOKhW/execute), the conversion to run in Singularity may be incorrect
+DEBUG (/srv/.gwms-user-job-wrapper.sh) changed _CONDOR_JOB_AD: /home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335/.job.ad => /srv/.job.ad
+DEBUG (/srv/.gwms-user-job-wrapper.sh) changed _CONDOR_CHIRP_CONFIG: /home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335/.chirp.config => /srv/.chirp.config
+DEBUG (/srv/.gwms-user-job-wrapper.sh) changed _CONDOR_JOB_IWD: /home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335 => /srv
+DEBUG (/srv/.gwms-user-job-wrapper.sh) unset CONDOR_CONFIG (/home/condor/execute/dir_7422/glide_0IOKhW/condor_config). File not found.
+DEBUG (/srv/.gwms-user-job-wrapper.sh) GWMS singularity wrapper, running inside singularity env = GLIDEIN_SEs=srm.ciemat.es
+GLIDEIN_ResourceName=CIEMAT-LCG2
+_CONDOR_JOB_PIDS=
+MANPATH=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/share/man
+GWMS_CONTAINERSW_FULL_VERSION=apptainer version 1.2.2-1.el7
+CUBACORES=8
+CMS_GLIDEIN_VERSION=35
+GWMS_CONTAINERSW_PATH=/cvmfs/oasis.opensciencegrid.org/mis/singularity/current/bin/singularity
+HOSTNAME=gaew0200.ciemat.es
+CONTAINERSW_PATH=/cvmfs/oasis.opensciencegrid.org/mis/singularity/current/bin/singularity
+REQUIRED_OS=rhel7
+MALLOC_CHECK_=0
+GPU_USE=0
+GFAL_PLUGIN_DIR=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64/gfal2-plugins/
+APPTAINER_COMMAND=exec
+VOMS_USERCONF=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/etc/vomses
+OSG_MACHINE_GPUS=0
+LoadModules=
+HISTSIZE=1000
+GLOBUS_LOCATION=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr
+GLIDEIN_MaxMemMBs=20240
+GLIDEIN_CPUS=8
+VO_OPS_DEFAULT_SE=srm.ciemat.es
+PERL5LIB=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/share/perl5/vendor_perl:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/share/perl5:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64/perl5/vendor_perl:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64/perl5
+OPENBLAS_NUM_THREADS=8
+GLIDECLIENT_Signature=5d600ad76a4990cefc727e771d0cada10ac3d229
+GWMS_SUBDIR=.gwms.d
+GT_PROXY_MODE=rfc
+_CONDOR_SCRATCH_DIR=/srv
+STASHCACHE=0
+CONTAINERSW_MODE=unprivileged
+OLDPWD=/srv
+MODULE_USE=0
+GLIDEIN_CONDOR_TOKEN=/home/condor/execute/dir_7422/glide_0IOKhW/ticket/credential_CMSG-v1_0.main_CMSHTPC_T2_ES_CIEMAT_condorce2.idtoken
+OSG_WN_TMP=/tmp
+GLIDEIN_SINGULARITY_BINDPATH=/storage,/lfs_roots,/cms,/etc/cvmfs/SITECONF,/ceph,/cvmfs/grid.cern.ch/etc/grid-security:/etc/grid-security
+CMS_VALIDATION_FRONTIER=0
+GWMS_DIR=/srv/.gwms.d
+GLIDEIN_Max_Idle=600
+VO_DUNE_SW_DIR=/cvmfs/dune.opensciencegrid.org
+GWMS_SINGULARITY_VERSION=1.2.2-1.el7
+GLIDEIN_REQUIRE_VOMS=False
+_CHIRP_DELAYED_UPDATE_PREFIX=Chirp*
+VOS_USING_SE_VONAME_LOWERCASE=VOS_USING_SE_VONAME_LOWERCASE 
+VOS_USING_SE_OTHER_SUBDIR=VOS_USING_SE_OTHER_SUBDIR 
+USER_PATH=/usr/local/bin:/usr/bin:/cvmfs/oasis.opensciencegrid.org/mis/apptainer/1.2.2/x86_64/utils/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+USER=pilcms01
+LD_LIBRARY_PATH=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/lib64:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/lib:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64/dcap:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64/lcgdm:/.singularity.d/libs
+CONTAINERSW_VERSION=1.2.2-1.el7
+CONDOR_PARENT_ID=gaew0200:45335:1693327110
+OSG_SINGULARITY_BINARY=/cvmfs/oasis.opensciencegrid.org/mis/singularity/current/bin/singularity
+GLIDEIN_Entry_Name=CMSHTPC_T2_ES_CIEMAT_condorce2
+VO_DTEAM_SW_DIR=/opt/exp_soft/dteam
+VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+OSGVO_PROJECT_NAME=cms.org.cern
+LCG_LOCATION=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1/usr
+JULIA_NUM_THREADS=8
+GWMS_PATH=/home/condor/execute/dir_7422/glide_0IOKhW/.gwms.d/bin:
+GLIDEIN_Name=gfactory_instance
+EMI_TARBALL_BASE=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1
+BATCH_SYSTEM=HTCondor
+SINGULARITY_NAME=b34bb15ab149fc65c6d2b3a8ec0e60b1a42a7114d01e2395d94e8d9ad67b09
+OSG_LOCATION=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64
+GWMS_SINGULARITY_REEXEC=1
+_CONDOR_CHIRP_CONFIG=/srv/.chirp.config
+COBBLER_SERVER=gaepuppet.ciemat.es
+GLIDEIN_Entry_Signature=a33ac3ee9eec052c767370ae08c14f1a184924fc
+CONTAINERSW_FULL_VERSION=apptainer version 1.2.2-1.el7
+CONDORCE_COLLECTOR_HOST=condorce2.ciemat.es:9619
+VO_OPS_SW_DIR=/opt/exp_soft/ops
+CONDOR_PROCD_ADDRESS_BASE=/home/condor/execute/dir_7422/glide_0IOKhW/log/procd_address
+GLIDEIN_DEBUG_OUTPUT=True
+SITECONFIG_PATH=/etc/cvmfs/SITECONF/T2_ES_CIEMAT/xcachepic
+GWMS_SINGULARITY_AUTOLOAD=1
+GLIDEIN_Site=CIEMAT
+GLIDECLIENT_Name=CMSG-v1_0.main
+VO_BIOMED_DEFAULT_SE=srm.ciemat.es
+TF_NUM_THREADS=8
+PATH=/srv/.gwms.d/bin:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/bin:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAIL=/var/spool/mail/pilcms01
+GWMS_SINGULARITY_OUTSIDE_PWD_LIST=/home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335
+GWMS_CONTAINERSW_VERSION=1.2.2-1.el7
+GLIDEIN_DEBUG_OPTIONS=userjob
+APPTAINER_APPNAME=
+_CONDOR_BIN=/home/condor/execute/dir_7422/glide_0IOKhW/main/condor/bin
+USE_PSS=True
+HOLD_GRACE_TIME=0
+GWMS_SINGULARITY_IMAGE_HUMAN=/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7
+APPTAINER_ENVIRONMENT=/.singularity.d/env/91-environment.sh
+MKL_NUM_THREADS=8
+VO_DTEAM_DEFAULT_SE=srm.ciemat.es
+VO_CMS_DEFAULT_SE=srm.ciemat.es
+TRUST_DOMAIN=cmssrvz02.fnal.gov:9618
+PWD=/srv
+STASHCACHE_WRITABLE=0
+SITE_GIIS_URL=lcg03.ciemat.es
+POSIXSTASHCACHE=0
+NUMEXPR_NUM_THREADS=8
+JAVA_HOME=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64/jre
+APPTAINER_NAME=b34bb15ab149fc65c6d2b3a8ec0e60b1a42a7114d01e2395d94e8d9ad67b09
+_CONDOR_WRAPPER_ERROR_FILE=/home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335/.job_wrapper_failure
+_CONDOR_ANCESTOR_21695=21698:1693169242:50193721
+LANG=C
+GWMS_SINGULARITY_MODE=unprivileged
+VO_VO_CTA_IN2P3_FR_DEFAULT_SE=srm.ciemat.es
+GLIDEIN_Country=ES
+TZ=UTC
+X509_VOMS_DIR=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/etc/grid-security/vomsdir
+GLIDEIN_Gatekeeper=condorce2.ciemat.es condorce2.ciemat.es:9619
+_CONDOR_SLOT=slot1_1
+SINGULARITY_ENVIRONMENT=/.singularity.d/env/91-environment.sh
+GWMS_AUX_SUBDIR=.gwms_aux
+GLIDEIN_Job_Max_Time=14400
+CMT_TMPDIR=/home/tmp
+BDII_LIST=lcg-bdii.cern.ch:2170
+MYPROXY_SERVER=myproxy.cern.ch
+GWMS_SINGULARITY_IMAGE=/cvmfs/singularity.opensciencegrid.org/.images/5b/b34bb15ab149fc65c6d2b3a8ec0e60b1a42a7114d01e2395d94e8d9ad67b09
+GLIDEIN_Tmp_Dir=/home/condor/execute/dir_7422/glide_0IOKhW/tmp
+APPTAINER_CONTAINER=/cvmfs/singularity.opensciencegrid.org/.images/5b/b34bb15ab149fc65c6d2b3a8ec0e60b1a42a7114d01e2395d94e8d9ad67b09
+_CONDOR_ANCESTOR_21698=45335:1693327109:2473965993
+SINGULARITY_BIND=/etc/cvmfs/SITECONF,/etc/grid-security,/etc/hosts,/etc/localtime,/cvmfs
+GLIDEIN_Proxy_URL=None
+GLIDEIN_GridType=condor
+GLIDEIN_Factory=CERN-Prod
+GLIDEIN_CLAIM_WORKLIFE_DYNAMIC=cpus*(6*3600)
+GLIDEIN_Singularity_Use=REQUIRED
+GLIDECLIENT_Group=main
+VO_DUNE_DEFAULT_SE=srm.ciemat.es
+HISTCONTROL=ignoredups
+GOMAXPROCS=8
+_CONDOR_EXECUTE=/home/condor/execute/dir_7422/glide_0IOKhW/execute
+GWMS_SINGULARITY_PATH=/cvmfs/oasis.opensciencegrid.org/mis/singularity/current/bin/singularity
+GLIDEIN_NODES=1
+GLIDEIN_Expose_Grid_Env=True
+SHLVL=3
+HOME=/srv
+GLITE_LOCATION_VAR=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1/var
+GLIDECLIENT_Group_Signature=f8104d98f383728f72759a8f1f9687eec9640e89
+_CONDOR_MACHINE_AD=/srv/.machine.ad
+VO_CALICE_DEFAULT_SE=srm.ciemat.es
+GLIDEIN_Max_Tail=600
+java_options=-Xms128m -Xmx512m
+X509_USER_PROXY=/srv/x509up_u12760
+GSI_AUTHZ_CONF=/dev/null
+CHIRP_DELAYED_UPDATE_MAX_ATTRS=200
+_CONDOR_THINPOOL_SIZE_KB=35894278
+SLOTS_LAYOUT=partitionable
+add_config_line_source=/home/condor/execute/dir_7422/glide_0IOKhW/add_config_line.source
+_CONDOR_ANCESTOR_45335=45945:1693327125:1087405831
+GLIDEIN_Signature=58b4422b12e4855a83c69126ee15bb317529e3cc
+GLIDEIN_CMSSite=T2_ES_CIEMAT
+GFAL_CONFIG_DIR=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/etc/gfal2.d/
+JOB_TOKENS=/data/lib/gwms-factory/server-credentials/entry_CMSHTPC_T2_ES_CIEMAT_condorce2/tokens.tgz
+InitializeModulesEnv=0
+GLIDEIN_Schedd=schedd_glideins9@vocms0207.cern.ch
+SOURCED_ADD_CONFIG_LINE=1
+PYTHONPATH=/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib/python2.7/site-packages:/cvmfs/oasis.opensciencegrid.org/mis/osg-wn-client/3.5/3.5.63-1/el7-x86_64/usr/lib64/python2.7/site-packages
+LOGNAME=pilcms01
+LCG_GFAL_INFOSYS=topbdii.core.ibergrid.eu:2170,bdii.pic.es:2170,lcg-bdii.cern.ch:2170
+GLIDEIN_REQUIRED_OS=any
+OSGVO_SUBMITTER=gboldrin@cms
+HAS_SINGULARITY=1
+VO_BIOMED_SW_DIR=/cvmfs/biomed.egi.eu
+VOS_USING_SE_BASEPATH=VOS_USING_SE_BASEPATH 
+GLIDEIN_Monitoring_Enabled=False
+EMI_UI_CONF=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1
+VO_CALICE_SW_DIR=/opt/exp_soft/calice
+GWMS_CONTAINERSW_MODE=unprivileged
+GLIDEIN_ProcId=0
+GLIDEIN_ClusterId=8488206
+OMP_NUM_THREADS=8
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+GWMS_SINGULARITY_STATUS=REQUIRED
+_CONDOR_JOB_AD=/srv/.job.ad
+PROMPT_COMMAND=PS1="Apptainer> "; unset PROMPT_COMMAND
+MEMORY_USAGE_METRIC=((ProportionalSetSizeKb ?: ResidentSetSize) + 1023) / 1024
+GWMS_SINGULARITY_BIND_CVMFS=1
+condor_vars_file=/home/condor/execute/dir_7422/glide_0IOKhW/main/condor_vars.lst
+SINGULARITY_CONTAINER=/cvmfs/singularity.opensciencegrid.org/.images/5b/b34bb15ab149fc65c6d2b3a8ec0e60b1a42a7114d01e2395d94e8d9ad67b09
+JOB_WRAPPER_SINGULARITY=/srv/.gwms-user-job-wrapper.sh
+CMS_SINGULARITYD_ENV=3.5/el7-x86_64
+GWMS_SINGULARITY_IMAGES_DICT=default:/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7,rhel6:/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel6,rhel7:/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel7,rhel8:/cvmfs/singularity.opensciencegrid.org/cmssw/cms:rhel8
+GWMS_SINGULARITY_BIND_GPU_LIBS=1
+CVMFS_REPOS_LIST=
+APPTAINER_BIND=/etc/cvmfs/SITECONF,/etc/grid-security,/etc/hosts,/etc/localtime,/cvmfs
+OMP_THREAD_LIMIT=8
+GWMS_SINGULARITY_LIB_VERSION=2
+GLITE_LOCATION=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1/usr
+GLIDEIN_PROVIDES=singularity/unprivileged
+GLIDEIN_LOCAL_TMP_DIR=/tmp/glide_pilcms01_QfJ4wx
+_CONDOR_JOB_IWD=/srv
+VO_VO_CTA_IN2P3_FR_SW_DIR=/cvmfs/cta.in2p3.fr
+SITE_NAME=CIEMAT-LCG2
+TF_LOOP_PARALLEL_ITERATIONS=8
+SRM_PATH=/cvmfs/grid.cern.ch/centos7-wn-4.0.5-1_umd4v1/usr/share/srm
+GWMS_SINGULARITY_OUTSIDE_PWD=/home/condor/execute/dir_7422/glide_0IOKhW/execute/dir_45335
+GWMS_SINGULARITY_IMAGE_RESTRICTIONS=cvmfs
+CONDOR_PROCD_ADDRESS=/home/condor/execute/dir_7422/glide_0IOKhW/log/procd_address
+_=/usr/bin/printenv
+DEBUG (/srv/.gwms-user-job-wrapper.sh) GWMS singularity wrapper, final setup.
+DEBUG (/srv/.gwms-user-job-wrapper.sh) current directory at execution (/srv): total 120528
+drwx------  5 pilcms01 cmspil     4096 Aug 29 18:38 .
+drwxr-xr-x 24 pilcms01 cmspil      760 Aug 29 18:38 ..
+-rw-r--r--  1 pilcms01 cmspil    13939 Aug 29 18:38 .LOG_.gwms-user-job-wrapper.sh.21.txt
+drwx------  2 pilcms01 cmspil     4096 Aug 29 18:38 .apptainer
+-rwx------  1 pilcms01 cmspil       48 Aug 29 18:38 .chirp.config
+drwxr-xr-x  5 pilcms01 cmspil     4096 Aug 29 18:38 .gwms.d
+drwxr-xr-x  2 pilcms01 cmspil     4096 Aug 29 18:38 .gwms_aux
+-rw-r--r--  1 pilcms01 cmspil     8644 Aug 29 18:38 .job.ad
+-rw-r--r--  1 pilcms01 cmspil    17558 Aug 29 18:38 .machine.ad
+-rw-r--r--  1 pilcms01 cmspil  6060070 Aug 29 18:38 CMSSW_10_2_24_patch1_ZV_EFT.tgz
+-rw-r--r--  1 pilcms01 cmspil   331770 Aug 29 18:38 CMSSW_9_3_19.tgz
+-rw-r--r--  1 pilcms01 cmspil   356761 Aug 29 18:38 CMSSW_9_4_7.tgz
+-rw-r--r--  1 pilcms01 cmspil 28090458 Aug 29 18:38 SMP-RunIIFall17DRPremix-00331_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     4603 Aug 29 18:38 SMP-RunIIFall17DRPremix-00331_2_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     9916 Aug 29 18:38 SMP-RunIIFall17MiniAODv2-00338_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     4104 Aug 29 18:38 SMP-RunIIFall17NanoAODv7-00268_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil     9615 Aug 29 18:38 SMP-RunIIFall17wmLHEGS-00271_1_cfg.py
+-rw-r--r--  1 pilcms01 cmspil    21346 Aug 29 18:38 _condor_stderr
+-rw-r--r--  1 pilcms01 cmspil      126 Aug 29 18:38 _condor_stdout
+-rwxr-xr-x  1 pilcms01 cmspil     2696 Aug 29 18:38 condor_exec.exe
+-rw-------  1 pilcms01 cmspil    12426 Aug 29 18:38 x509up_u12760
+-rw-r--r--  1 pilcms01 cmspil 88411468 Aug 29 18:38 zztatajjdim6_ewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz
+DEBUG (/srv/.gwms-user-job-wrapper.sh) GWMS singularity wrapper, job exec: /srv/condor_exec.exe 1827
+DEBUG (/srv/.gwms-user-job-wrapper.sh) GWMS singularity wrapper, messages after this line are from the actual job ##################
