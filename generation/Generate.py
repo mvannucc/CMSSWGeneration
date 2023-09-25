@@ -132,8 +132,8 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
            jdl += "arguments = $(Step)\n"
         jdl += "use_x509userproxy = true\n"
         jdl += " +JobFlavour = \"nextweek\"\n"
-        jdl += "request_cpus = 8 \n"
-        jdl += "request_disk = 35000000 \n" 
+        # jdl += "request_cpus = 8 \n"
+        # jdl += "request_disk = 35000000 \n" 
         jdl += "should_transfer_files = YES\n"
         jdl += "Error = log/$(proc).err_$(Step)\n"
         jdl += "Output = log/$(proc).out_$(Step)\n"
@@ -197,16 +197,23 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
             # input = cms.untracked.int32(274)
             wrapper += "sed -i 's#^.*input[^=]*=[^=]*cms.untracked.int32.*$#    input = cms.untracked.int32({})#g' -i {}\n".format(events, file)
             wrapper += 'sed -i "s/^.*nEvents = .*$/    nEvents = cms.untracked.uint32({}),/g" -i {}\n'.format(events, file)
-            wrapper += 'sed -i "s/^process.RandomNumberGeneratorService.externalLHEProducer.initialSeed.*$/process.RandomNumberGeneratorService.externalLHEProducer.initialSeed=int($(($1+1)))/g" -i {} \n'.format(file)
+            wrapper += 'if grep -qF "process.RandomNumberGeneratorService.externalLHEProducer.initialSeed" {}; then \n'.format(file)
+            wrapper += 'sed -i "s/^process.RandomNumberGeneratorService.externalLHEProducer.initialSeed.*$/process.RandomNumberGeneratorService.externalLHEProducer.initialSeed=int($(($1+1)))/g" {} \n'.format(file)
+            wrapper += 'else \n'
+            wrapper += 'sed -i "/^# Customisation from command line/a process.RandomNumberGeneratorService.externalLHEProducer.initialSeed=int($(($1+1)))" {} \n'.format(file)
+            wrapper += 'fi \n'
+
             if dipoleRecoil:
+                wrapper += "if ! grep -qF 'SpaceShower:dipoleRecoil = on' {}; then \n".format(file)
                 wrapper += "sed -i '/^.*pythia8CP5Settings[^=]*=.*/i \ \ \ \ \ \ \ \ processParameters = cms.vstring(\"SpaceShower:dipoleRecoil = on\"),' -i {}\n".format(file)
+                wrapper += 'fi \n'
           
         if Steps[year][k]['release'] != openCMSSW:
             if openCMSSW != "":
                 wrapper += "rm -rf {}\n".format(openCMSSW)
             wrapper += 'echo "Opening {}"\n'.format(Steps[year][k]['release'])
             wrapper += 'tar -xzvf {}.tgz\n'.format(Steps[year][k]['release'])
-            wrapper += 'rm {}.tgz\n'.format(Steps[year][k]['release'])
+            # wrapper += 'rm {}.tgz\n'.format(Steps[year][k]['release'])
             wrapper += 'cd {}/src/\n'.format(Steps[year][k]['release'])
             # wrapper += 'export SCRAM_ARCH={}\n'.format(Steps[year][k]['SCRAM_ARCH'])
             wrapper += 'scramv1 b ProjectRename # this handles linking the already compiled code - do NOT recompile\n'
@@ -227,6 +234,7 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
             elif k == "miniAOD" and totalSteps[-1] != "miniAOD":
                 filesToRemove.append(file.split("_")[0]+".root")
         wrapper += "\n\n"
+    wrapper += "rm CMSSW_*tgz\n"
     wrapper += "rm {}\n".format(" ".join(filesToRemove))
     wrapper += "rm -rf {} *py\n".format(openCMSSW)
 

@@ -20,7 +20,8 @@ def download(path, link, run=True):
     lines = r.text.split("\n")
     begin = lines.index(list(filter(lambda k: 'export SCRAM_ARCH' in k, lines))[0])
     scram = lines[begin].split("=")[-1]
-    end = lines.index(list(filter(lambda k: 'EndOfTestFile' == k, lines))[0])
+    # end = lines.index(list(filter(lambda k: 'EndOfTestFile' == k, lines))[0])
+    end = None
     lines = lines[begin:end]
     lines = list(map(lambda k: k+'\n', lines))
     if not os.path.isdir(path):
