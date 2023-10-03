@@ -49,6 +49,9 @@ def create_CMSSW_tar(release, singularity):
             # but does work in 10_2_24
             if release =="CMSSW_10_2_22":
                script += "git checkout 0c5417182b0\n" 
+        if release == "CMSSW_10_6_26":
+            script += "git cms-init\n"
+            script += "git cms-merge-topic acmbulla:10_6_26_reweight_patch\n"
         #elif release == "CMSSW_10_2_6":
         #    print("--> Patching 10_2_6")
         #    script += "git cms-init\n"
