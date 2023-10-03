@@ -10,9 +10,11 @@ export LC_ALL=C; unset LANGUAGE
 
 let seed=$1+1
 
+eos cp /eos/user/g/gboldrin/gridpacks/WV/EFT/"$2"_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz .
+
 mkdir temp_dir; tar -axvf "$2"_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz --directory temp_dir; cd temp_dir
 # number of events requested, seed, number of cpus
-./runcmsgrid.sh 5 $seed 2
+./runcmsgrid.sh 250 $seed 2
 
 mv cmsgrid_final.lhe ..; cd ..
 
@@ -40,6 +42,7 @@ rm -rf temp_dir "$2"_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz
 # but inside a singularity environment
 
 singularity exec --contain --ipc --pid --home $PWD --bind /cvmfs  /cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest ./LheToEDM.sh
+rm cmsgrid_final.lhe
 
 # now run pythia still in the container
 
@@ -55,6 +58,7 @@ singularity exec --contain --ipc --pid --home $PWD --bind /cvmfs  /cvmfs/singula
 # cmsRun SMP-RunIISummer15GS-00266_1_cfg.py
 
 singularity exec --contain --ipc --pid --home $PWD --bind /cvmfs  /cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest ./Pythia.sh
+rm SMP-RunIIWinter15pLHE-00016.root
 
 # now run PREMIX step
 
@@ -70,9 +74,11 @@ date
 
 # step 1
 cmsRun SMP-RunIISummer16DR80Premix-00645_1_cfg.py
+rm  SMP-RunIISummer15GS-00266.root
 
 # step 2
 cmsRun SMP-RunIISummer16DR80Premix-00645_2_cfg.py
+rm SMP-RunIISummer16DR80Premix-00645_0.root
 
 # singularity exec --contain --ipc --pid --home $PWD --bind /cvmfs  /cvmfs/singularity.opensciencegrid.org/opensciencegrid/osgvo-el6:latest ./Premix.sh
 
@@ -89,6 +95,7 @@ cd ../../
 date
 
 cmsRun SMP-RunIISummer16MiniAODv3-00478_1_cfg.py
+rm SMP-RunIISummer16DR80Premix-00645.root
 
 # now run NANOAOD step
 echo "Opening CMSSW_10_2_24_patch1_ZV_EFT"
@@ -102,10 +109,15 @@ cd ../../
 date
 
 cmsRun SMP-RunIISummer16NanoAODv7-00422_1_cfg.py  
+rm SMP-RunIISummer16MiniAODv3-00478.root
 
 #########
 
-rm SMP-RunIIWinter15pLHE-00016.root SMP-RunIISummer15GS-00266.root SMP-RunIISummer16DR80Premix-00645.root SMP-RunIISummer16DR80Premix-00645_0.root SMP-RunIISummer16MiniAODv3-00478.root
+eos cp SMP-RunIISummer16NanoAODv7-00422.root /eos/user/g/gboldrin/nAOD_WV/"$2"/2016/"$2"_"$1".root
+
+# rm SMP-RunIIWinter15pLHE-00016.root SMP-RunIISummer15GS-00266.root SMP-RunIISummer16DR80Premix-00645.root SMP-RunIISummer16DR80Premix-00645_0.root SMP-RunIISummer16MiniAODv3-00478.root
+
+rm SMP-RunIISummer16NanoAODv7-00422.root
 rm -rf CMSSW_10_2_24_patch1_ZV_EFT *py
 date
 
