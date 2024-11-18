@@ -1,47 +1,47 @@
-{
-    "TEST_Wewk_18v7": {
-        "year": "2018",
-        "gridpack": "/home/abulla/Wewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
-        "dipoleRecoil": true,
-        "removeOldRoot": true,
-        "events": 100,
-        "jobs": 1,
-        "doBatch":1
-    },
-    "Wewk_18v7": {
-        "year": "2018",
-        "gridpack": "/home/abulla/Wewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
-        "dipoleRecoil": true,
-        "removeOldRoot": true,
-        "events": 2000,
-        "jobs": 10000,
-        "doBatch":1
-    },
-    "TEST_Wewk_18v9": {
+{ 
+    "ZZJJTo4L_QCD":{
         "year": "UL2018",
-        "gridpack": "/home/abulla/Wewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
-        "dipoleRecoil": true,
-        "removeOldRoot": true,
-        "events": 100,
-        "jobs": 1,
+        "gridpack": "/afs/cern.ch/work/m/mvannucc/CMSSW_10_6_19/src/ZZjj_qcd_UL_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
+        "dipoleRecoil": false,
+        "removeOldRoot": false,
+        "events": 200,
+        "jobs": 3000,
         "doBatch":1
     },
-    "Wewk_18v9": {
+    "ZZjj_4l":{
+	"year": "UL2018",
+	"gridpack": "/afs/cern.ch/work/m/mvannucc/CMSSW_10_6_19/src/ZZ_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
+	"dipoleRecoil": false,
+	"removeOldRoot": false,
+	"events": 200,
+	"jobs": 500,
+	"doBatch":1
+    },
+    "ZZJJ_4L_EFT_onShell":{
         "year": "UL2018",
-        "gridpack": "/home/abulla/Wewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
-        "dipoleRecoil": true,
-        "removeOldRoot": true,
-        "events": 2000,
-        "jobs": 10000,
+        "gridpack": "/afs/cern.ch/work/m/mvannucc/CMSSW_10_6_19/src/final_ZZ_dim6_gridpack/ZZjj_Zonshell_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
+        "dipoleRecoil": false,
+        "removeOldRoot": false,
+        "events": 100,
+        "jobs": 8000,
         "doBatch":1
     },
-    "TEST_Wewk_17v9": {
-        "year": "UL2017",
-        "gridpack": "/home/abulla/Wewk_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
-        "dipoleRecoil": true,
-        "removeOldRoot": true,
+    "ZZJJ_4l_Rew_EFT_1M":{
+        "year": "UL2018",
+        "gridpack": "/afs/cern.ch/work/m/mvannucc/CMSSW_10_6_19/src/ZZjj_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
+        "dipoleRecoil": false,
+        "removeOldRoot": false,
         "events": 100,
-        "jobs": 1,
+        "jobs": 8000,
         "doBatch":1
+    },
+    "local_test_EFT":{
+        "year": "UL2018",
+        "gridpack": "/afs/cern.ch/work/m/mvannucc/CMSSW_10_6_19/src/ZZjj_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz",
+        "dipoleRecoil": false,
+        "removeOldRoot": false,
+        "events": 1000,
+        "jobs": 1,
+        "doBatch":0
     }
 }

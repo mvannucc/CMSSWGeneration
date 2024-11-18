@@ -93,7 +93,8 @@ def generate(name, year, gridpack, removeOldRoot, dipoleRecoil, events, jobs, do
         else:
             singularities.append(False)
     cmssws = list(set(cmssws))
-    # print(cmssws)
+    print("ppppppppppppppppppppppppppppppppp")
+    print(cmssws)
 
     for i in range(len(cmssws)):
         cmssw = cmssws[i]

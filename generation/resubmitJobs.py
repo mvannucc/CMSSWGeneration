@@ -22,7 +22,7 @@ folder = argv[1]
 done = glob.glob("output/{}/root/*.root".format(folder))
 #output/Zjj_ewk_dim6_all_17_big/root/Zjj_ewk_dim6_all_17_big_11764394_882.root
 done = list(map(lambda k: k.split("/")[-1].split(".")[0].split("_")[-1], done))
-finished = glob.glob("output/{}/log/*out*".format(folder))
+finished = glob.glob("output/{}/log/*log*".format(folder))
 #output/Zjj_ewk_dim6_all_17_big/log/Zjj_ewk_dim6_all_17_big.out_0
 finished = list(map(lambda k: k.split("/")[-1].split(".")[-1].split("_")[-1], finished))
 missing = list(set(finished).difference(set(done)))
