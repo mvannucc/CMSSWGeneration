@@ -12,11 +12,28 @@ os.makedirs(output_folder, exist_ok=True)
 getcontext().prec = 50
 
 # Constants for normalization
-CROSS_SECTIONS = {'EFT': 0.8325, 'EWK': 0.427}  # Cross sections in fb
-LUMINOSITY = 59.8  # Luminosity in fb^-1
+CROSS_SECTIONS = {}  
+LUMINOSITY = 59.8*1000  # Luminosity in pb^-1
 
 # LHE file paths
 lhe_file_paths = {'EFT': 'lhe/cmsgrid_final_EFT.lhe', 'EWK': 'lhe/cmsgrid_final_EWK.lhe'}
+
+for label, lhe_file_path in lhe_file_paths.items():
+    with open(lhe_file_path, 'r') as lhe_file:
+        in_init_block = False
+        init_lines = []
+        for line in lhe_file:
+            if '<init>' in line:
+                in_init_block = True
+                continue
+            if '</init>' in line:
+                break
+            if in_init_block:
+                init_lines.append(line.strip())
+        if len(init_lines) >= 2:
+            cross_section_line = init_lines[1]
+            cross_section_pb = float(cross_section_line.split()[0])  # First value is the cross section in pb
+            CROSS_SECTIONS[label] = cross_section_pb
 
 # PDG IDs for electrons, muons, taus, neutrinos, and photons
 electron_pids = [11, -11]  # e-, e+
@@ -210,6 +227,7 @@ for label, lhe_file_path in lhe_file_paths.items():
 print("\nData Summary:")
 for label, hist_data in data.items():
     print(f"\nLabel: {label}")
+    print(f"  Cross section: {CROSS_SECTIONS[label]} pb")
     print(total_histogram_weights[label])
     print(filtered_event_counts[label])
     print(less_lep[label])
