@@ -1,4 +1,4 @@
-import pylhe
+import xml.etree.ElementTree as ET
 import itertools
 from matplotlib import pyplot as plt
 from decimal import Decimal, getcontext
@@ -8,16 +8,14 @@ import os
 output_folder = "histograms_output"
 os.makedirs(output_folder, exist_ok=True)
 
-# Set precision for Decimal calculations
 getcontext().prec = 50
 
-# Constants for normalization
-CROSS_SECTIONS = {}  
-LUMINOSITY = 59.8*1000  # Luminosity in pb^-1
+CROSS_SECTIONS = {}
+LUMINOSITY = 59.8  # Luminosity in fb^-1
 
-# LHE file paths
-lhe_file_paths = {'EFT': 'lhe/cmsgrid_final_EFT.lhe', 'EWK': 'lhe/cmsgrid_final_EWK.lhe'}
+lhe_file_paths = {'EFT': 'lhe/cmsgrid_final_EFT.lhe', 'SM': 'lhe/cmsgrid_final_SM.lhe'}
 
+# Extract cross sections from the LHE files
 for label, lhe_file_path in lhe_file_paths.items():
     with open(lhe_file_path, 'r') as lhe_file:
         in_init_block = False
@@ -32,20 +30,20 @@ for label, lhe_file_path in lhe_file_paths.items():
                 init_lines.append(line.strip())
         if len(init_lines) >= 2:
             cross_section_line = init_lines[1]
-            cross_section_pb = float(cross_section_line.split()[0])  # First value is the cross section in pb
-            CROSS_SECTIONS[label] = cross_section_pb
+            cross_section = float(cross_section_line.split()[0])  # cross section [pb]
+            CROSS_SECTIONS[label] = cross_section * 1000  # Convert to fb
+        else:
+            print(f"Warning: Could not find cross section in {lhe_file_path}")
 
-# PDG IDs for electrons, muons, taus, neutrinos, and photons
 electron_pids = [11, -11]  # e-, e+
 muon_pids = [13, -13]      # mu-, mu+
-tau_pids = [15, -15]       # tau-, tau+
-exclude_pids = electron_pids + muon_pids + tau_pids + [12, -12, 14, -14, 16, -16, 22]  # Exclude neutrinos and photons
+jet_pids = [1, -1, 2, -2, 3, -3, 4, -4, 5, -5, 6, -6]
 
-Z_MASS = Decimal('91.1876')  # Known Z boson mass in GeV
+Z_MASS = Decimal('91.1876')  
 
 data = {}
-weight_sums = {label: {} for label in lhe_file_paths}  # To store total weights
-filtered_event_counts = {label: 0 for label in lhe_file_paths}  # Count valid events only
+weight_sums = {label: {} for label in lhe_file_paths}  
+filtered_event_counts = {label: 0 for label in lhe_file_paths}  
 total_histogram_weights = {label: 0.0 for label in lhe_file_paths}
 less_lep = {label: 0.0 for label in lhe_file_paths}
 
@@ -78,99 +76,92 @@ def get_particle_eta(particle):
 
 for label, lhe_file_path in lhe_file_paths.items():
     print(f"Processing file: {lhe_file_path}")
-    events = pylhe.read_lhe(lhe_file_path)
 
+    context = ET.iterparse(lhe_file_path, events=('end',))
     event_number = 0
-    with open(lhe_file_path, 'r') as lhe_file:
-        for event in events:
+
+    for event, elem in context:
+        if elem.tag == 'event':
             event_number += 1
 
-            # Progress print every 10,000 events
-            if event_number % 10000 == 0:
-                print(f"Processed {event_number} events for {label}")
-            
-            # 17k max events
-            if event_number == 17000:
-                break
+            event_text = elem.text.strip()
+            lines = event_text.strip().split('\n')
 
-            
-            has_electron = False
-            has_muon = False
-            tau_count = 0
+            event_header = lines[0].strip().split()
+            num_particles = int(event_header[0])
 
-            for particle in event.particles:
-                if particle.status == 1:
-                    if particle.id in electron_pids:
-                        has_electron = True
-                    elif particle.id in muon_pids:
-                        has_muon = True
-                    elif particle.id in tau_pids:
-                        tau_count += 1
+            particles = []
+            for line in lines[1:num_particles+1]:
+                pdata = line.strip().split()
+                particle = {
+                    'id': int(pdata[0]),
+                    'status': int(pdata[1]),
+                    'px': float(pdata[6]),
+                    'py': float(pdata[7]),
+                    'pz': float(pdata[8]),
+                    'e': float(pdata[9]),
+                    'm': float(pdata[10]),
+                }
+                particles.append(particle)
 
-            # Skip event if it has two taus from a Z boson for the EWK sample
-            # if label == 'EWK' and tau_count >= 2:
-            #     continue
+            base_weight = 1.0
 
-            base_weight = 1. 
-
-            # Only for EFT, apply additional weight from <rwgt id='rwgt_1'>
+            # For EFT, apply additional weight from rwgt
             if label == 'EFT':
+                rwgt_elem = elem.find('rwgt')
                 rwgt_1_value = 1.0
-                in_rwgt_block = False
-
-                for line in lhe_file:
-                    if "<rwgt>" in line:
-                        in_rwgt_block = True
-                    elif "</rwgt>" in line:
-                        in_rwgt_block = False
-                        break
-                    elif in_rwgt_block and "id='rwgt_1'" in line:
-                        rwgt_1_value = float(line.split(">")[1].split("<")[0].strip())
-                        break
-
+                if rwgt_elem is not None:
+                    for wgt in rwgt_elem.findall('wgt'):
+                        if wgt.attrib['id'] == 'rwgt_1':
+                            rwgt_1_value = float(wgt.text.strip())
+                            break
                 base_weight *= rwgt_1_value
 
-            event_weights = {'default': base_weight}
+            class Particle:
+                def __init__(self, id, status, px, py, pz, e, m):
+                    self.id = id
+                    self.status = status
+                    self.px = px
+                    self.py = py
+                    self.pz = pz
+                    self.e = e
+                    self.m = m
 
-            # Initialize data structure if not already done
+            event_particles = [Particle(**p) for p in particles]
+
             if label not in data:
-                data[label] = {wgt_id: {
+                data[label] = {'default': {
                     'invMass_Z1': [],
                     'invMass_Z2': [],
                     'Lepton1_Pt': [], 'Lepton2_Pt': [], 'Lepton3_Pt': [], 'Lepton4_Pt': [],
                     'Lepton1_Eta': [], 'Lepton2_Eta': [], 'Lepton3_Eta': [], 'Lepton4_Eta': [],
                     'Jet1_Pt': [], 'Jet2_Pt': [],
                     'Jet_DeltaEta': []
-                } for wgt_id in event_weights}
+                }}
 
-            # Process particles for analysis
             leptons, jets = [], []
-            for particle in event.particles:
+            for particle in event_particles:
                 if particle.status != 1:
                     continue
                 pid = particle.id
                 if pid in electron_pids + muon_pids:
                     leptons.append(particle)
-                elif pid not in exclude_pids:
+                if pid in jet_pids:
                     jets.append(particle)
 
-            # Only proceed with events containing at least 4 leptons
             if len(leptons) >= 4:
                 # Order leptons and jets by pt
                 leptons = sorted(leptons, key=get_particle_pt, reverse=True)
                 jets = sorted(jets, key=get_particle_pt, reverse=True)
 
-                # Store leptons' pt and eta separately
-                for idx, lepton in enumerate(leptons[:4]):  # Consider up to 4 leptons
+                for idx, lepton in enumerate(leptons[:4]):  
                     pt = get_particle_pt(lepton)
                     eta = get_particle_eta(lepton)
                     lepton_label_pt = f'Lepton{idx+1}_Pt'
                     lepton_label_eta = f'Lepton{idx+1}_Eta'
-                    for wgt_id in event_weights:
-                        data[label][wgt_id][lepton_label_pt].append((pt, event_weights[wgt_id]))
-                        data[label][wgt_id][lepton_label_eta].append((eta, event_weights[wgt_id]))
+                    data[label]['default'][lepton_label_pt].append((pt, base_weight))
+                    data[label]['default'][lepton_label_eta].append((eta, base_weight))
 
-                # Process jets and store the two jets with highest pt separately
                 if len(jets) >= 2:
                     jet1, jet2 = jets[0], jets[1]
 
@@ -182,15 +173,12 @@ for label, lhe_file_path in lhe_file_paths.items():
 
                     delta_eta = abs(jet1_eta - jet2_eta)
 
-                    for wgt_id in event_weights:
-                        data[label][wgt_id]['Jet1_Pt'].append((jet1_pt, event_weights[wgt_id]))
-                        data[label][wgt_id]['Jet2_Pt'].append((jet2_pt, event_weights[wgt_id]))
-                        data[label][wgt_id]['Jet_DeltaEta'].append((delta_eta, event_weights[wgt_id]))
-                
+                    data[label]['default']['Jet1_Pt'].append((jet1_pt, base_weight))
+                    data[label]['default']['Jet2_Pt'].append((jet2_pt, base_weight))
+                    data[label]['default']['Jet_DeltaEta'].append((delta_eta, base_weight))
 
-                # Calculate invariant masses if there are exactly 4 leptons
                 if len(leptons) >= 4:
-                    total_histogram_weights[label] += event_weights['default']
+                    total_histogram_weights[label] += base_weight
                     filtered_event_counts[label] += 1
                     sfos_pairs = []
                     for (i1, l1), (i2, l2) in itertools.combinations(enumerate(leptons), 2):
@@ -212,53 +200,56 @@ for label, lhe_file_path in lhe_file_paths.items():
                         l3, l4 = [leptons[i] for i in remaining_indices]
                         Z2_mass = get_invariant_mass_two(l3, l4)
 
-                        for wgt_id in event_weights:
-                            data[label][wgt_id]['invMass_Z1'].append((Z1_mass, event_weights[wgt_id]))
-                            data[label][wgt_id]['invMass_Z2'].append((Z2_mass, event_weights[wgt_id]))
-            else : 
-                less_lep[label] += 1    
+                        data[label]['default']['invMass_Z1'].append((Z1_mass, base_weight))
+                        data[label]['default']['invMass_Z2'].append((Z2_mass, base_weight))
+            else:
+                less_lep[label] += 1
 
-            for wgt_id, weight in event_weights.items():
-                if wgt_id not in weight_sums[label]:
-                    weight_sums[label][wgt_id] = 0
-                weight_sums[label][wgt_id] += weight
+            total_weight = base_weight
+            if 'default' not in weight_sums[label]:
+                weight_sums[label]['default'] = 0
+            weight_sums[label]['default'] += total_weight
 
-# Data Summary
+            elem.clear()
+
+            if event_number == 30000:
+                break
+
+    # Clean up
+    del context
+
 print("\nData Summary:")
 for label, hist_data in data.items():
     print(f"\nLabel: {label}")
-    print(f"  Cross section: {CROSS_SECTIONS[label]} pb")
-    print(total_histogram_weights[label])
-    print(filtered_event_counts[label])
-    print(less_lep[label])
+    print(f"  Cross section: {CROSS_SECTIONS[label]/1000} pb")
+    print(f"  Total histogram weight: {total_histogram_weights[label]}")
+    print(f"  Filtered event counts: {filtered_event_counts[label]}")
+    print(f"  Events with less than 4 leptons: {less_lep[label]}")
     for wgt_id in hist_data:
         print(f"  Weight ID: {wgt_id}")
         for var, values in hist_data[wgt_id].items():
             print(f"    {var} - Entries: {len(values)}")
 
+colors = {'EFT': 'blue', 'SM': 'orange'}
 
-colors = {'EFT': 'blue', 'EWK': 'orange'}
-
-# Compute scaling factors
 scaling_factors = {
-    label: (CROSS_SECTIONS[label] * LUMINOSITY) / filtered_event_counts[label]
+    label: (CROSS_SECTIONS[label] * LUMINOSITY) / total_histogram_weights[label] 
     for label in lhe_file_paths
 }
 
-def plot_separated_histograms_with_error_lines(data, variables, x_labels, x_ranges, colors, output_filename, scaling_factors):
-    # Create a figure with a grid layout
+def plot_separated_histograms_with_error_lines(data, variables, x_labels, x_ranges, bins, colors, output_filename, scaling_factors):
+    xsec_ratio = CROSS_SECTIONS['EFT'] / CROSS_SECTIONS['SM']
+
     num_vars = len(variables)
     fig, axes = plt.subplots(nrows=2, ncols=num_vars, figsize=(5 * num_vars, 8), gridspec_kw={'height_ratios': [3, 1]})
     plt.subplots_adjust(hspace=0.3, wspace=0.3)
 
-    for i, (var, x_label, x_range) in enumerate(zip(variables, x_labels, x_ranges)):
-        
+    for i, (var, x_label, x_range, bin_num) in enumerate(zip(variables, x_labels, x_ranges, bins)):
         ax_hist = axes[0, i]
-        ax_ratio = axes[1, i]  # Bottom axis for the ratio plot
+        ax_ratio = axes[1, i]  
 
         histograms = {}
 
-        # Process each label (EFT and EWK)
         for label in data:
             histograms[label] = {}
 
@@ -267,11 +258,10 @@ def plot_separated_histograms_with_error_lines(data, variables, x_labels, x_rang
                 weights = np.array(weights)
                 weights_squared = weights ** 2
 
-                counts, bin_edges = np.histogram(values, bins=20, range=x_range, weights=weights)  # Fixed 30 bins
-                sumw2, _ = np.histogram(values, bins=20, range=x_range, weights=weights_squared)
+                counts, bin_edges = np.histogram(values, bins=bin_num, range=x_range, weights=weights)
+                sumw2, _ = np.histogram(values, bins=bin_num, range=x_range, weights=weights_squared)
                 errors = np.sqrt(sumw2)
 
-                # Apply normalization (scaling factor)
                 scaling_factor = scaling_factors[label]
                 counts *= scaling_factor
                 errors *= scaling_factor
@@ -280,96 +270,93 @@ def plot_separated_histograms_with_error_lines(data, variables, x_labels, x_rang
                 histograms[label]['errors'] = errors
                 histograms[label]['bin_edges'] = bin_edges
 
-                # Plot filled rectangular histogram bars in the top axes
                 ax_hist.bar(bin_edges[:-1], counts, width=np.diff(bin_edges), align='edge', label=label, color=colors[label], alpha=0.6, edgecolor='black', linewidth=1)
 
-                
                 ax_hist.errorbar(
-                    (bin_edges[:-1] + bin_edges[1:]) / 2,  # X positions at bin centers
-                    counts,                                # Y positions
-                    yerr=errors,                           # Errors
-                    fmt='none',                            # No marker
-                    ecolor=colors[label],                  # Error bar color matches histogram
-                    elinewidth=1.5,                        # Line thickness for error bars
-                    capsize=3                              # Optional: small caps on error bars
+                    (bin_edges[:-1] + bin_edges[1:]) / 2,
+                    counts,
+                    yerr=errors,
+                    fmt='none',
+                    ecolor=colors[label],
+                    elinewidth=1.5,
+                    capsize=3
                 )
             else:
                 print(f"Warning: No data to plot for {label}, {var}")
 
-        # Compute ratio EFT / EWK 
-        if 'EFT' in histograms and 'EWK' in histograms:
+        if 'EFT' in histograms and 'SM' in histograms:
             counts_EFT = histograms['EFT']['counts']
             errors_EFT = histograms['EFT']['errors']
-            counts_EWK = histograms['EWK']['counts']
-            errors_EWK = histograms['EWK']['errors']
+            counts_SM = histograms['SM']['counts']
+            errors_SM = histograms['SM']['errors']
             bin_centers = (histograms['EFT']['bin_edges'][:-1] + histograms['EFT']['bin_edges'][1:]) / 2
 
-            # Avoid division by zero
             with np.errstate(divide='ignore', invalid='ignore'):
-                ratio = counts_EFT / counts_EWK
+                ratio = counts_EFT / counts_SM
                 ratio_uncertainty = ratio * np.sqrt(
-                    (errors_EFT / counts_EFT) ** 2 + (errors_EWK / counts_EWK) ** 2
+                    (errors_EFT / counts_EFT) ** 2 + (errors_SM / counts_SM) ** 2
                 )
 
-            ratio[counts_EWK == 0] = np.nan
-            ratio_uncertainty[counts_EWK == 0] = np.nan
+            ratio[counts_SM == 0] = np.nan
+            ratio_uncertainty[counts_SM == 0] = np.nan
 
-            
+
             ax_ratio.errorbar(bin_centers, ratio, yerr=ratio_uncertainty, fmt='o', color='black', capsize=3)
-            ax_ratio.axhline(y=1, color='gray', linestyle='--')  # Reference line at ratio = 1
-            ax_ratio.set_ylim(0, 2)  # Adjust as needed
+            #ax_ratio.axhline(y=1, color='gray', linestyle='--', label='Ratio = 1')  # Reference line at ratio = 1
+            ax_ratio.axhline(y=xsec_ratio, color='red', linestyle='-', label=f'Ratio = {xsec_ratio:.2f}')  
+            ax_ratio.set_ylim(0, max(2 * xsec_ratio, 4))  # Adjust y-limit dynamically
 
-        
         ax_hist.set_ylabel('Normalized Events')
         ax_hist.set_title(var)
         ax_hist.legend()
-        ax_ratio.set_ylabel('Ratio EFT/EWK')
+        ax_ratio.set_ylabel('Ratio EFT/SM')
         ax_ratio.set_xlabel(x_label)
         ax_ratio.grid(True)
 
-    # Save the entire figure as one image file
     plt.tight_layout()
     plt.savefig(output_filename)
     plt.close(fig)
 
-
 plot_separated_histograms_with_error_lines(
     data=data,
     variables=['Jet1_Pt', 'Jet2_Pt', 'Jet_DeltaEta'],
-    x_labels=['Jet1 pT (GeV)', 'Jet2 pT (GeV)', 'Delta Eta between leading jets'],
-    x_ranges=[(0, 300), (0, 300), (0, 10)],
+    x_labels=['$p_T (j_1)$ [GeV]', '$p_T (j_2)$ [GeV]', '$\Delta \eta_{jj}$'],
+    x_ranges=[(0, 700), (0, 400), (0, 10)],
+    bins=[10, 10, 10],
     colors=colors,
-    output_filename=os.path.join(output_folder, 'jets_histograms_with_error_lines.png'),
-    scaling_factors=scaling_factors  # Include scaling_factors
+    output_filename=os.path.join(output_folder, 'jets.png'),
+    scaling_factors=scaling_factors
 )
 
 plot_separated_histograms_with_error_lines(
     data=data,
     variables=['invMass_Z1', 'invMass_Z2'],
-    x_labels=['Invariant Mass of Z1 (GeV)', 'Invariant Mass of Z2 (GeV)'],
-    x_ranges=[(60, 120), (60, 120)],
+    x_labels=['$M_{Z_1}$ [GeV]', '$M_{Z_2}$ [GeV]'],
+    x_ranges=[(70, 110), (60, 120)],
+    bins=[6, 8],
     colors=colors,
-    output_filename=os.path.join(output_folder, 'z_mass_histograms_with_error_lines.png'),
-    scaling_factors=scaling_factors  
+    output_filename=os.path.join(output_folder, 'z_mass.png'),
+    scaling_factors=scaling_factors
 )
 
 plot_separated_histograms_with_error_lines(
     data=data,
     variables=['Lepton1_Pt', 'Lepton2_Pt', 'Lepton3_Pt', 'Lepton4_Pt'],
-    x_labels=['Lepton1 pT (GeV)', 'Lepton2 pT (GeV)', 'Lepton3 pT (GeV)', 'Lepton4 pT (GeV)'],
-    x_ranges=[(0, 300), (0, 300), (0, 300), (0, 300)],
+    x_labels=['$p_T (\ell_1)$ [GeV]', '$p_T (\ell_2)$ [GeV]', '$p_T (\ell_3)$ [GeV]', '$p_T (\ell_4)$ [GeV]'],
+    x_ranges=[(0, 600), (0, 400), (0, 300), (0, 200)],
+    bins=[10, 10, 10, 10],
     colors=colors,
-    output_filename=os.path.join(output_folder, 'lepton_pt_histograms_with_error_lines.png'),
-    scaling_factors=scaling_factors  
+    output_filename=os.path.join(output_folder, 'lepton_pt.png'),
+    scaling_factors=scaling_factors
 )
 
 plot_separated_histograms_with_error_lines(
     data=data,
     variables=['Lepton1_Eta', 'Lepton2_Eta', 'Lepton3_Eta', 'Lepton4_Eta'],
-    x_labels=['Lepton1 Eta', 'Lepton2 Eta', 'Lepton3 Eta', 'Lepton4 Eta'],
+    x_labels=['$\eta (\ell_1)$', '$\eta (\ell_2)$', '$\eta (\ell_3)$', '$\eta (\ell_4)$'],
     x_ranges=[(-5, 5), (-5, 5), (-5, 5), (-5, 5)],
+    bins=[10, 10, 10, 10],
     colors=colors,
-    output_filename=os.path.join(output_folder, 'lepton_eta_histograms_with_error_lines.png'),
-    scaling_factors=scaling_factors  
+    output_filename=os.path.join(output_folder, 'lepton_eta.png'),
+    scaling_factors=scaling_factors
 )
-
